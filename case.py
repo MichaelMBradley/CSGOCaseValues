@@ -1,3 +1,8 @@
+from misc import getName
+from skin import skin
+from constants import KEYCOST, WEIGHTS
+
+
 class case:
     def __init__(self, caseLink, casePrice, skinLinks, skinsPrices, skinsInfo):
         self.link = caseLink

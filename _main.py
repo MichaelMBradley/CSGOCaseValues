@@ -1,9 +1,6 @@
 from case import case
-from constants import *
-from filemanage import *
-from misc import *
-from skin import skin
-from webreader import *
+from filemanager import *
+from value import fillData
 
 
 def toClass(cases, skins, skinfo, prices, caseCost):
