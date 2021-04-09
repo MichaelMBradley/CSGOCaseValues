@@ -31,7 +31,4 @@ class skin:
         if self.wear[0] > FLOATS[wearNum + 1] or self.wear[1] < FLOATS[wearNum]:
             return 0
         else:
-            return (
-                min(self.wear[1], FLOATS[wearNum + 1])
-                - max(self.wear[0], FLOATS[wearNum])
-            ) / self.wearRange
+            return (min(self.wear[1], FLOATS[wearNum + 1]) - max(self.wear[0], FLOATS[wearNum])) / self.wearRange

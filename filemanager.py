@@ -6,25 +6,6 @@ FILEDEST = os.path.dirname(__file__) + "\\caseinfo\\"
 
 
 def saveInfo(testTime=False):
-    """
-    Parameters
-    ----------
-    currPrice : Boolean, optional
-        Saves the current price of skins to file. The default is False.
-    testTime : Boolean, optional
-        Records the time taken to read and download pages. The default is False.
-
-    Returns
-    -------
-    cases : List of Strings
-        List of links to cases on csgostash.com.
-    skins : List of Lists of Strings
-        Links to each weapons organized in the same order the case links were given.
-    skinfo : List of Lists of Lists of Floats
-        Float values and skin rarity for each weapon, organized in the same structure as the skin links.
-    prices : List of Lists of Lists of Floats
-        Prices for each wear rating for each weapon, organized in the same structure as the skin links.
-    """
     cases = caseLinks()
     skins, caseCost = skinLinks(cases, testTime)
     prices, skinfo = getPrices(skins, testTime)
@@ -44,23 +25,6 @@ def saveInfo(testTime=False):
 
 
 def readInfo():
-    """
-    Parameters
-    ----------
-    currPrice : Boolean, optional
-        Reads the current price of skins from file. The default is False.
-
-    Returns
-    -------
-    cases : List of Strings
-        List of links to cases on csgostash.com.
-    skins : List of Lists of Strings
-        Links to each weapons organized in the same order the case links were given.
-    skinfo : List of Lists of Lists of Floats
-        Float values and skin rarity for each weapon, organized in the same structure as the skin links.
-    prices : List of Lists of Lists of Floats
-        Prices for each wear rating for each weapon, organized in the same structure as the skin links.
-    """
     with open(FILEDEST + "cases.json", "r") as filec:
         cases = json.load(filec)
     with open(FILEDEST + "skins.json", "r") as files:
