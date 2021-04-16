@@ -32,3 +32,9 @@ class skin:
             return 0
         else:
             return (min(self.wear[1], FLOATS[wearNum + 1]) - max(self.wear[0], FLOATS[wearNum])) / self.wearRange
+
+    def __repr__(self):
+        return self.name
+
+    def __str__(self):
+        return f"{self.name} with a value of {self.value:.2f}"

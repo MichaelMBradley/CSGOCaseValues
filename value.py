@@ -1,9 +1,16 @@
 from constants import *
-from case import case
+from case import case, toClass
+from filemanager import readinfo
+
+
+def analysis(fname=""):
+    cases, skins, skinfo, prices, caseCost = readinfo(fname)
+    prices = fillData(prices, skinfo, skins)
+    return toClass(cases, skins, skinfo, prices, caseCost)
 
 
 def fillData(prices, skinfo, skins):
-    rel = info(skins, skinfo, prices)
+    rel = info(prices, skinfo, skins)
     for c in range(len(prices)):
         for s in range(len(prices[c])):
             for w in range(len(prices[c][s])):
@@ -23,7 +30,7 @@ def fillData(prices, skinfo, skins):
     return prices
 
 
-def info(skins, skinfo, prices):
+def info(prices, skinfo, skins):
     rel = []
     for i in range(6):
         rel.append([0] * 10)

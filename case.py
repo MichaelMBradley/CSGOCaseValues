@@ -20,11 +20,27 @@ class case:
             self.skins.append(skin(skinLinks[i], skinsPrices[i], skinsInfo[i]))
             self.skinRarities[skinsInfo[i][2]] += 1
 
-    def calcValue(self):
+    def calcValue(self, info=False):
         v = 0
-        # print(f"CASE: {self.name}\nCost\tWeight\tRarity\tValue\tName")
+        if info:
+            print(f"CASE: {self.name}\nCost\tWeight\tRarity\tValue\tName")
         for s in self.skins:
-            # print(f"{s.value:.2f}\t{WEIGHTS[s.rarity]:.4f}\t{self.skinRarities[s.rarity]:.2f}\t{s.value * WEIGHTS[s.rarity] / self.skinRarities[s.rarity]:.2f}\t{s.name}")
+            if info:
+                print(f"{s.value:.2f}\t{WEIGHTS[s.rarity]:.4f}\t{self.skinRarities[s.rarity]:.2f}\t{s.value * WEIGHTS[s.rarity] / self.skinRarities[s.rarity]:.2f}\t{s.name}")
             v += s.value * WEIGHTS[s.rarity] / self.skinRarities[s.rarity]
-        # print(f"{v:.2f}")
+        if info:
+            print(f"{v:.2f}")
         return v
+
+    def __repr__(self):
+        return self.name
+
+    def __str__(self):
+        return f"{self.name} with an EV of {self.EV:.2f}"
+
+
+def toClass(cases, skins, skinfo, prices, caseCost):
+    properCases = []
+    for c in range(len(cases)):
+        properCases.append(case(cases[c], caseCost[c], skins[c], prices[c], skinfo[c]))
+    return properCases

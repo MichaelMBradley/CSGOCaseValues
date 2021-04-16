@@ -1,5 +1,4 @@
 from constants import *
-import matplotlib.pyplot as mp
 import re
 from urllib.request import urlopen, Request
 
@@ -10,10 +9,6 @@ def calcWeights():
         weights.append(weights[-1] * 5)
     total = str(sum(weights[1:]))
     print([str(w) + "/" + total for w in weights])
-
-
-def casesort(c):
-    return c.EV
 
 
 def hasCompleteInfo(prices, skins):
@@ -32,38 +27,8 @@ def getName(link):
     return link[[i.start() for i in re.finditer("/", link)][-1] + 1 :].replace("-", " ")  # Returns name from the last '/' until the end, replacing '-' with ' '
 
 
-def plotInfo(rel):
-    # Unnecessary
-    mp.plot([0])
-    for i in range(len(rel)):
-        ax = mp.subplot(3, 2, i + 1, ylabel=FULLRARITY[i])  # New subplot for each rarity level
-        ax.plot(CONDITIONS[5:][::-1], rel[i][:5], label="Normal")
-
-        for x, y in zip(CONDITIONS[5:][::-1], rel[i][:5]):  # Plots normal prices
-            ax.annotate(str(y), xy=(x, y))  # Prints relative price for each data point
-
-        if i != 1:
-            ax.plot(CONDITIONS[5:][::-1], rel[i][5:], label="StatTrak")
-            for x, y in zip(CONDITIONS[5:][::-1], rel[i][5:]):  # Plots StatTrak prices
-                ax.annotate(str(y), xy=(x, y))
-        mp.subplot(ax)
-
-    mp.legend()
-    mp.tight_layout()
-    mp.figure(figsize=(20, 20), clear=True)
-    mp.show()
-
-
 def printpage(link):
     print(f'{urlopen(Request(link, headers={"User-Agent": "Mozilla/5.0"})).read().decode("utf-8")}\n{link}')
-
-
-def printsortedcaselist(caselist):
-    cases = caselist.copy()
-    cases.sort(key=casesort, reverse=True)
-    print(f"EV\t(Value\tPrice)\tName")
-    for c in cases:
-        print(f"{c.EV:.4f}\t({c.value:.2f}\t{c.totalprice:.2f})\t{c.name}")
 
 
 def printtesttime(t, webp):
