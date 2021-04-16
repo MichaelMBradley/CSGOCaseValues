@@ -4,7 +4,7 @@
 
 ## Example
 
-When reading the sample data (`printsortedcaselist(analysis())`), the ouput is:
+When reading the sample data (`printsortedcaselist(analysis())`), the output is:
 
 ```text
 EV      (Value  Price)  Name
