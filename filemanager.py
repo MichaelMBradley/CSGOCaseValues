@@ -6,7 +6,7 @@ from webreader import *
 OPDN = os.path.dirname(__file__)
 
 
-def saveinfo(testTime=False, sampledata=False, overwrite=True):
+def saveinfo(sampledata=False, overwrite=True):
     if sampledata:  # If writing new sample data
         FILEDEST = OPDN + "\\sampledata\\"
     else:
@@ -21,8 +21,8 @@ def saveinfo(testTime=False, sampledata=False, overwrite=True):
                 print("File already exists.")
                 return [], [], [], [], []
     cases = caseLinks()
-    skins, caseCost = skinLinks(cases, testTime)
-    prices, skinfo = getPrices(skins, testTime)
+    skins, caseCost = skinLinks(cases)
+    prices, skinfo = getPrices(skins)
 
     with open(FILEDEST + "cases.json", "w") as filec:
         json.dump(cases, filec, indent=6)
@@ -42,7 +42,7 @@ def readinfo(filename=""):
     if filename == "":  # Default to reading sample data
         FILEDEST = OPDN + "\\sampledata\\"
     else:
-        if len(filename.split("\\")) == 0:  # If only day is provideed
+        if len(filename.split("\\")) == 1:  # If only day is provideed
             FILEDEST = OPDN + "\\data\\" + filename
         else:  # If full filename is provided
             FILEDEST = filename

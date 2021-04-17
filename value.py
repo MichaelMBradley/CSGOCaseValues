@@ -5,8 +5,11 @@ from filemanager import readinfo
 
 def analysis(fname=""):
     cases, skins, skinfo, prices, caseCost = readinfo(fname)
-    prices = fillData(prices, skinfo, skins)
-    return toClass(cases, skins, skinfo, prices, caseCost)
+    if cases != []:
+        prices = fillData(prices, skinfo, skins)
+        return toClass(cases, skins, skinfo, prices, caseCost)
+    else:
+        return cases
 
 
 def fillData(prices, skinfo, skins):

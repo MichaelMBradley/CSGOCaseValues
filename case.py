@@ -14,6 +14,7 @@ class case:
         self.addSkins(skinLinks, skinsPrices, skinsInfo)
         self.value = self.calcValue()
         self.EV = self.value / self.totalprice
+        self.EVNK = self.value / KEYCOST
 
     def addSkins(self, skinLinks, skinsPrices, skinsInfo):
         for i in range(len(skinLinks)):

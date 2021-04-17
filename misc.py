@@ -29,29 +29,3 @@ def getName(link):
 
 def printpage(link):
     print(f'{urlopen(Request(link, headers={"User-Agent": "Mozilla/5.0"})).read().decode("utf-8")}\n{link}')
-
-
-def printtesttime(t, webp):
-    web = 0
-    func = 0
-    for i in range(1, len(t)):
-        ti = t[i][0] - t[i - 1][0]
-        if t[i][1]:
-            web += ti
-        else:
-            func += ti
-    pw = web / webp
-    pc = func / webp
-    print(f"Webpage retrieval: {web:.2f}s ({pw:.3f}s/page)\nCalculations: {func:.2f}s ({pc:.2f}s/page)")
-
-
-def status(curr, length, msg=""):
-    percent = curr / length
-    t = (length - curr) * WEBTIME  # Time remaining
-    if t < 60:
-        t = str(round(t, 2)) + "s"  # Display in seconds or minutes
-    else:
-        t = str(int(t / 60)) + "m" + str(round(t % 60, 2)) + "s"
-    print(f"\r{msg} Completed {curr:2}/{length:2} |" + "█" * int(20 * curr / length) + "░" * int(20 * (length - curr) / length) + f"| {percent:.0%} | Remaining: {t}" + " " * 5, end="")
-    if curr == length:
-        print()  # Prints new line

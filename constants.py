@@ -11,3 +11,5 @@ FULLRARITY = ["Knife", "Gloves", "Covert", "Classified", "Restricted", "Mil-Spec
 KEYCOST = 3.16
 WEIGHTS = {"K": 1 / 391, "G": 1 / 391, "C": 5 / 782, "Cl": 25 / 782, "R": 125 / 782, "MS": 625 / 782}
 FLOATS = (0, 0.07, 0.15, 0.38, 0.45, 1)
+PRIMECASES = ["Fracture Case", "Prisma 2 Case", "Prisma Case", "Danger Zone Case", "Clutch Case"]
+NONPRIMECASES = ["CS20 Case", "Horizon Case", "Spectrum 2 Case", "Gamma 2 Case", "Chroma 3 Case", "Revolver Case"]

@@ -1,9 +1,8 @@
 from bs4 import BeautifulSoup as bs
 from constants import *
-from misc import status, printtesttime
 import re
-import time
 from urllib.request import urlopen, Request
+from status import *
 
 
 def caseLinks():
@@ -23,20 +22,16 @@ def caseLinks():
     return cases
 
 
-def skinLinks(caseLinks, testTime=False):
+def skinLinks(caseLinks):
     skins = []
-    t = []
     caseCost = []
-    length = len(caseLinks)
-    curr = 0
-    webp = 0
-    status(curr, length, "Finding skins: ")
+    progress = statusbar(len(caseLinks), "Finding skins")
+    t = timer(["Retrieving webpage", "Analyzing data"])
 
     for link in caseLinks:
-        t.append([time.time(), False] if testTime else 0)
+        t.swapto(0)
         caseFile = urlopen(Request(link, headers={"User-Agent": "Mozilla/5.0"})).read().decode("utf-8")  # Reads case page
-        t.append([time.time(), True] if testTime else 0)
-        webp += 1
+        t.swapto(1)
         skins.append([l.start() for l in re.finditer(SITE + "/skin/", caseFile)])  # Retrieves positions of links to skins
         priceStart = caseFile.find("CDN$ ") + 5
         caseCost.append(float(caseFile[priceStart : caseFile.find(" ", priceStart)]))
@@ -51,21 +46,18 @@ def skinLinks(caseLinks, testTime=False):
             special = "Gloves"
             iden = "/glove/"
 
-        t.append([time.time(), False] if testTime else 0)
+        t.swapto(0)
         knifeFile = urlopen(Request(link + "?" + special + "=1", headers={"User-Agent": "Mozilla/5.0"})).read().decode("utf-8")  # Reads knife/glove page
-        t.append([time.time(), True] if testTime else 0)
-        webp += 1
+        t.swapto(1)
 
         knifePageLinks = [l.start() for l in re.finditer(link + "?" + special + "=1&page=", knifeFile)]  # Retrieves positions of links to other special pages, original page
-        # print(knifePageLinks, link + "?" + special + "=1&page=", knifeFile.find("https://csgostash.com/case/277/Shattered-Web-Case?Knives=1&page=2"))
         knifePageLinks.insert(0, knifeFile)
 
         for i in range(len(knifePageLinks)):
             if not i == 0:
-                t.append([time.time(), False] if testTime else 0)
+                t.swapto(0)
                 knifePageLinks[i] = urlopen(Request(knifeFile[knifePageLinks[i] : knifeFile.find("&", knifePageLinks[i]) + 7], headers={"User-Agent": "Mozilla/5.0"})).read().decode("utf-8")  # If not last index (already file), open webpage with formatted link
-                t.append([time.time(), True] if testTime else 0)
-                webp += 1
+                t.swapto(1)
             knives = [l.start() for l in re.finditer(SITE + iden, knifePageLinks[i])]  # Retrieves positions of links to knives
             for j in range(len(knives)):
                 knives[j] = knifePageLinks[i][knives[j] : knifePageLinks[i].find('"', knives[j])]  # Formats knife links
@@ -77,31 +69,25 @@ def skinLinks(caseLinks, testTime=False):
                 skins[-1].pop(k)
             else:
                 k += 1  # If current index is valid check next index
-        curr += 1
-        status(curr, length, "Finding skins: ")
-
-    if testTime:
-        printtesttime(t, webp)
+        progress.incrementandprint()
+    t.results()
 
     return skins, caseCost
 
 
-def getPrices(skinLinks, testTime=False):
+def getPrices(skinLinks):
     prices = []
     skinfo = []
-    length = sum([len(l) for l in skinLinks])
-    curr = 0
-    webp = 0
-    status(curr, length, "Getting prices: ")
-    t = []
+    progress = statusbar(sum([len(l) for l in skinLinks]), "Getting prices")
+    t = timer(["Retrieving webpage", "Analyzing data"])
 
     for box in skinLinks:
         case = []
         casefo = []
         for skin in box:
-            t.append([time.time(), False] if testTime else 0)
+            t.swapto(0)
             loadpage = urlopen(Request(skin, headers={"User-Agent": "Mozilla/5.0"})).read().decode("utf-8")  # Reads page
-            t.append([time.time(), True] if testTime else 0)
+            t.swapto(1)
 
             if not loadpage.find("★") == -1:  # Determines if skin is a knife or glove
                 res = 2
@@ -111,13 +97,10 @@ def getPrices(skinLinks, testTime=False):
                 res = 10
 
             page = bs(loadpage, "html.parser")
-            webp += 1
             wear = [p.get_text() for p in page.findAll("span", class_="pull-right")][:res]  # Gets the first (res) wear prices
             wearfo = [float(p.get_text()) for p in page.findAll("div", class_="marker-value cursor-default")]  # Finds max and min wear
             if wearfo == []:
                 wearfo = [-1, -1]  # If skin is vanilla
-            curr += 1
-            status(curr, length, "Getting prices: ")
 
             for i in range(len(wear)):
                 if wear[i].find(".") != -1:  # If wear is a number
@@ -143,10 +126,9 @@ def getPrices(skinLinks, testTime=False):
             wearfo.append(quality)
             case.append(wear)
             casefo.append(wearfo)
+            progress.incrementandprint()
         prices.append(case)
         skinfo.append(casefo)
-
-    if testTime:
-        printtesttime(t, webp)
+    t.results()
 
     return prices, skinfo

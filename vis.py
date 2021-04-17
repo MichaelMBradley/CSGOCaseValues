@@ -5,12 +5,51 @@ import glob
 import matplotlib.pyplot as mp
 import os
 from value import analysis, fillData
-from misc import status
+from status import *
 
 
 def casesort(c):
     # Used only for sorting cases
     return c.EV
+
+
+def dropped(cases):
+    p = []
+    np = []
+    for case in cases:
+        if case.name in PRIMECASES:
+            p.append(case)
+        if case.name in NONPRIMECASES:
+            np.append(case)
+    print(f"{'':>20} \t(Drop) (Bought)")
+    print("Prime drops expected value:")
+    for case in p:
+        print(f"{case.name:>20}:\t{case.EVNK:.4f}\t{case.EV:.4f}")
+    print("Non-Prime drops expected value:")
+    for case in np:
+        print(f"{case.name:>20}:\t{case.EVNK:.4f}\t{case.EV:.4f}")
+
+
+def plotcases(datecases):
+    dates = []
+    cases = {}
+    for comb in datecases:
+        dates.append(comb[0])
+        for case in comb[1]:
+            if case.name in cases.keys():
+                cases[case.name].append(case.EV)
+            else:
+                cases[case.name] = [case.EV]
+    # mp.subplot(1, 2, 1)
+    for case in cases.keys():
+        mp.plot(dates, cases[case], label=case)
+        mp.text(dates[-1], cases[case][-1], case, horizontalalignment="right")
+    # mp.legend(loc="center left", bbox_to_anchor=(1, 0.5), ncol=2)
+    mp.title("CSGO Case Unboxing Expected Values")
+    mp.xlabel("Date")
+    mp.ylabel("Expected Value")
+    mp.ylim([0, 1])
+    mp.show()
 
 
 def plotRelativePrices(rel):
@@ -53,11 +92,8 @@ def printsortedcaselist(caselist):
 def readhistoricaldata():
     caselist = []
     files = glob.glob(os.path.dirname(__file__) + "\\data\\*")
-    curr = 0
-    total = len(files)
-    status(curr, total, "Reading and analyzing files")
+    progress = statusbar(len(files), "Reading and analyzing files")
     for fname in files:
         caselist.append((fname.split("\\")[-1], analysis(fname)))
-        curr += 1
-        status(curr, total, "Reading and analyzing files")
+        progress.incrementandprint()
     return caselist

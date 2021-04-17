@@ -1,12 +1,10 @@
-from case import *
 from filemanager import *
-from value import *
 from vis import *
 
 
 def main():
-    cases, skins, skinfo, prices, caseCost = saveinfo(testTime=True)
-    printhistoricaldata()
+    saveinfo()
+    plotcases(readhistoricaldata())
 
 
 if __name__ == "__main__":
