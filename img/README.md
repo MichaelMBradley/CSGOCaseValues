@@ -6,7 +6,7 @@ A collection of MatPlotLib renders of data collected with this code.
 
 ![Relative pricing](https://raw.githubusercontent.com/MichaelMBradley/CSGOCaseValues/master/img/relativepricing.png)
 
-This image displays the relative average prices of the different wears as a multiple of the average price of the battle-scarred non-stattrak skin. The subplots are divided by the rarity of the skins in question.
+This image displays the relative average prices of the different wears as a multiple of the average price of the battle-scarred non-StatTrak skin. The subplots are divided by the rarity of the skins in question. Interestingly, the prices of well-worn skins are (in general) higher than the prices of field-tested skins.
 
 Generated: 2020-11-20
 
