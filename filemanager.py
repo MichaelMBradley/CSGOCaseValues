@@ -1,9 +1,23 @@
 from datetime import date
 import json
 import os
-from webreader import *
 
 OPDN = os.path.dirname(__file__)
+
+
+def constants(keys=[]):
+    with open(f"{OPDN}\\constants.json", "r") as const:
+        c = json.load(const)
+    if keys == []:
+        return c
+    else:
+        v = []
+        for k in keys:
+            v.append(c.get(k, None))
+        return v
+
+
+from webreader import *
 
 
 def saveinfo(sampledata=False, overwrite=True):

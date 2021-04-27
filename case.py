@@ -1,6 +1,8 @@
 from misc import getName
 from skin import skin
-from constants import KEYCOST, WEIGHTS
+from filemanager import constants
+
+[KEYCOST, WEIGHTS] = constants(["KEYCOST", "WEIGHTS"])
 
 
 class case:
@@ -13,24 +15,42 @@ class case:
         self.skinRarities = {"K": 0, "G": 0, "C": 0, "Cl": 0, "R": 0, "MS": 0}
         self.addSkins(skinLinks, skinsPrices, skinsInfo)
         self.value = self.calcValue()
+        self.valuens = self.calcValue(special=False)
         self.EV = self.value / self.totalprice
-        self.EVNK = self.value / KEYCOST
+        self.EVD = self.value / KEYCOST  # Expected value if recieved as a drop
+        self.EVNS = self.valuens / self.totalprice  # Expected value without knives/gloves
+        self.prob = self.calcProbability()
+        self.probdrop = self.calcProbability(drop=True)
 
     def addSkins(self, skinLinks, skinsPrices, skinsInfo):
         for i in range(len(skinLinks)):
             self.skins.append(skin(skinLinks[i], skinsPrices[i], skinsInfo[i]))
             self.skinRarities[skinsInfo[i][2]] += 1
 
-    def calcValue(self, info=False):
-        v = 0
+    def calcProbability(self, info=False, drop=False):
+        p = 0
         if info:
-            print(f"CASE: {self.name}\nCost\tWeight\tRarity\tValue\tName")
+            print(f"CASE: {self.name}\nCost\tWeight\tValue\tIncl\tName")
         for s in self.skins:
             if info:
-                print(f"{s.value:.2f}\t{WEIGHTS[s.rarity]:.4f}\t{self.skinRarities[s.rarity]:.2f}\t{s.value * WEIGHTS[s.rarity] / self.skinRarities[s.rarity]:.2f}\t{s.name}")
-            v += s.value * WEIGHTS[s.rarity] / self.skinRarities[s.rarity]
+                print(f"{s.value:.2f}\t{WEIGHTS[s.rarity] / self.skinRarities[s.rarity]:.4f}\t{WEIGHTS[s.rarity] / self.skinRarities[s.rarity]:.4f}\t{s.value > (KEYCOST if drop else self.totalprice)}\t{s.name}")
+            if s.value > (KEYCOST if drop else self.totalprice):
+                p += WEIGHTS[s.rarity] / self.skinRarities[s.rarity]
         if info:
-            print(f"{v:.2f}")
+            print(f"Probability of making a profit (Dropped: {drop}): {p}")
+        return p
+
+    def calcValue(self, info=False, special=True):
+        v = 0
+        if info:
+            print(f"CASE: {self.name}\nCost\tWeight\tValue\tName")
+        for s in self.skins:
+            if info and (special or s.rarity not in ["K", "G"]):
+                print(f"{s.value:.2f}\t{WEIGHTS[s.rarity] / self.skinRarities[s.rarity]:.4f}\t{s.value * WEIGHTS[s.rarity] / self.skinRarities[s.rarity]:.2f}\t{s.name}")
+            if special or s.rarity not in ["K", "G"]:
+                v += s.value * WEIGHTS[s.rarity] / self.skinRarities[s.rarity]
+        if info:
+            print(f"Total Value: {v:.2f}\nExpected Value: {v/self.totalprice:.2f}")
         return v
 
     def __repr__(self):

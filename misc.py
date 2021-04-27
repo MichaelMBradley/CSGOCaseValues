@@ -1,6 +1,8 @@
-from constants import *
 import re
 from urllib.request import urlopen, Request
+from filemanager import constants
+
+[RARITY] = constants(["RARITY"])
 
 
 def calcWeights():

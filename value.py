@@ -1,6 +1,8 @@
-from constants import *
 from case import case, toClass
 from filemanager import readinfo
+from filemanager import constants
+
+[RARITY] = constants(["RARITY"])
 
 
 def analysis(fname=""):

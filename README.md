@@ -1,6 +1,12 @@
 # CSGOCaseValues
 
- Estimating expected value of each case in CSGO, using data scraped from CSGOStash. In the future, I hope to use a different source, either reading directly from Steam or through some API.
+***PLEASE* DO NOT BUY CASES TO MAKE MONEY. IF YOU LOOK AT THE DATA PRESENTED AND STILL BELIEVE THAT YOU HAVE A CHANCE THEN IT'S YOUR OWN FAULT IF YOU LOSE ALL OF YOUR MONEY. THIS PROJECT IS PURELY FOR MY OWN INTEREST.**
+
+**GAMBLING IS ADDICTIVE. IF YOU BELIEVE YOU HAVE A GAMBLING ISSUE, PLEASE SEEK HELP. IF YOU DON'T BELIEVE YOU HAVE A GAMBLING ADDICTION, A LITTLE INTROSPECTION NEVER HURT ANYONE.**
+
+## About
+
+Estimating expected value of each case in CSGO, using data scraped from CSGOStash. In the future, I hope to use a different source, either reading directly from Steam or through some API.
 
 ## Example
 

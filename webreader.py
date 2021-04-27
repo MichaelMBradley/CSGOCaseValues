@@ -1,8 +1,10 @@
 from bs4 import BeautifulSoup as bs
-from constants import *
 import re
 from urllib.request import urlopen, Request
 from status import *
+from filemanager import constants
+
+[SITE, RARITY, FULLRARITY] = constants(["SITE", "RARITY", "FULLRARITY"])
 
 
 def caseLinks():

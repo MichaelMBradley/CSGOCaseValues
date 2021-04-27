@@ -1,5 +1,7 @@
-from constants import *
 from misc import getName
+from filemanager import constants
+
+[FLOATS] = constants(["FLOATS"])
 
 
 class skin:
