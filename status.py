@@ -60,3 +60,4 @@ class timer:
     def results(self):
         for i in range(len(self.names)):
             print(f"{self.names[i]}: {formattime(self.times[i])} ({formattime(self.times[i]/self.inc[i])}/each)")
+        print(f"Total time: {formattime(sum(self.times))}\n")
