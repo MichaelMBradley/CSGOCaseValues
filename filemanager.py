@@ -21,6 +21,10 @@ from webreader import *
 
 
 def saveinfo(sampledata=False, overwrite=True):
+    cases = caseLinks()
+    skins, caseCost = skinLinks(cases)
+    prices, skinfo = getPrices(skins)
+
     if sampledata:  # If writing new sample data
         FILEDEST = OPDN + "\\sampledata\\"
     else:
@@ -34,9 +38,6 @@ def saveinfo(sampledata=False, overwrite=True):
             else:
                 print("File already exists.")
                 return [], [], [], [], []
-    cases = caseLinks()
-    skins, caseCost = skinLinks(cases)
-    prices, skinfo = getPrices(skins)
 
     with open(FILEDEST + "cases.json", "w") as filec:
         json.dump(cases, filec, indent=6)

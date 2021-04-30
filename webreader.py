@@ -80,6 +80,7 @@ def skinLinks(caseLinks):
 def getPrices(skinLinks):
     prices = []
     skinfo = []
+    cache = {}
     progress = statusbar(sum([len(l) for l in skinLinks]), "Getting prices")
     t = timer(["Retrieving webpage", "Analyzing data"])
 
@@ -87,45 +88,48 @@ def getPrices(skinLinks):
         case = []
         casefo = []
         for skin in box:
-            t.swapto(0)
-            loadpage = urlopen(Request(skin, headers={"User-Agent": "Mozilla/5.0"})).read().decode("utf-8")  # Reads page
-            t.swapto(1)
+            (wear, wearfo) = cache.get(skin, (None, None))
+            if (wear, wearfo) == (None, None):
+                t.swapto(0)
+                loadpage = urlopen(Request(skin, headers={"User-Agent": "Mozilla/5.0"})).read().decode("utf-8")  # Reads page
+                t.swapto(1)
 
-            if not loadpage.find("★") == -1:  # Determines if skin is a knife or glove
-                res = 2
-            elif (not loadpage.find("Gloves |") == -1) or (not loadpage.find("Wraps |") == -1):
-                res = 5
-            else:
-                res = 10
+                if not loadpage.find("★") == -1:  # Determines if skin is a knife or glove
+                    res = 2
+                elif (not loadpage.find("Gloves |") == -1) or (not loadpage.find("Wraps |") == -1):
+                    res = 5
+                else:
+                    res = 10
 
-            page = bs(loadpage, "html.parser")
-            wear = [p.get_text() for p in page.findAll("span", class_="pull-right")][:res]  # Gets the first (res) wear prices
-            wearfo = [float(p.get_text()) for p in page.findAll("div", class_="marker-value cursor-default")]  # Finds max and min wear
-            if wearfo == []:
-                wearfo = [-1, -1]  # If skin is vanilla
+                page = bs(loadpage, "html.parser")
+                wear = [p.get_text() for p in page.findAll("span", class_="pull-right")][:res]  # Gets the first (res) wear prices
+                wearfo = [float(p.get_text()) for p in page.findAll("div", class_="marker-value cursor-default")]  # Finds max and min wear
+                if wearfo == []:
+                    wearfo = [-1, -1]  # If skin is vanilla
 
-            for i in range(len(wear)):
-                if wear[i].find(".") != -1:  # If wear is a number
-                    num = wear[i][wear[i].find(" ") + 1 :]
-                    if num.find(",") != -1:  # Deals with thousands
-                        num = num[: num.find(",")] + num[num.find(",") + 1 :]
-                    wear[i] = float(num)
-                elif wear[i].find("Possible") != -1:  # If wear is impossible
-                    wear[i] = -2
-                else:  # If no price available
-                    wear[i] = -1
+                for i in range(len(wear)):
+                    if wear[i].find(".") != -1:  # If wear is a number
+                        num = wear[i][wear[i].find(" ") + 1 :]
+                        if num.find(",") != -1:  # Deals with thousands
+                            num = num[: num.find(",")] + num[num.find(",") + 1 :]
+                        wear[i] = float(num)
+                    elif wear[i].find("Possible") != -1:  # If wear is impossible
+                        wear[i] = -2
+                    else:  # If no price available
+                        wear[i] = -1
 
-            quals = [i.get_text() for i in page.findAll("p", class_="nomargin")][0]
-            quality = ""
-            for r in range(len(RARITY)):
-                if quals.find(FULLRARITY[r]) != -1:  # Finds quality of skin
-                    quality = RARITY[r]
-                    break
-            if quality == "" and quals.find("Contraband"):  # Makes the Howl a Covert skin to simplify calculations
-                quality = "C"
-            elif quality == "":  # If hand wraps, assign glove quality
-                quality = "G"
-            wearfo.append(quality)
+                quals = [i.get_text() for i in page.findAll("p", class_="nomargin")][0]
+                quality = ""
+                for r in range(len(RARITY)):
+                    if quals.find(FULLRARITY[r]) != -1:  # Finds quality of skin
+                        quality = RARITY[r]
+                        break
+                if quality == "" and quals.find("Contraband"):  # Makes the Howl a Covert skin to simplify calculations
+                    quality = "C"
+                elif quality == "":  # If hand wraps, assign glove quality
+                    quality = "G"
+                wearfo.append(quality)
+                cache[skin] = (wear, wearfo)
             case.append(wear)
             casefo.append(wearfo)
             progress.incrementandprint()
