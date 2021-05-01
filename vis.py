@@ -4,7 +4,7 @@ import glob
 import matplotlib.pyplot as mp
 from matplotlib.ticker import MultipleLocator
 import os
-from value import analysis, fillData
+from value import *
 from status import *
 from filemanager import constants
 
@@ -126,7 +126,8 @@ def plotcases(datecases, value=lambda case: case.EV, legend=False, colour=True, 
     mp.show()
 
 
-def plotRelativePrices(rel):
+def plotRelativePrices(prices, skinfo, skins):
+    rel = info(prices, skinfo, skins)
     # Plots the relative prices of different wear values, seperated by rarity
     mp.plot([0])
     for i in range(len(rel)):

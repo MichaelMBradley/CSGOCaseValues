@@ -29,6 +29,31 @@ class skin:
                 vs *= 0.1
             return v + vs
 
+    def calcProbability(self, price, info=False):
+        p = 0
+        ps = 0
+        if self.wear[0] == -1:
+            return (0.1 if self.prices[0] >= price else 0) + (0.9 if self.prices[1] >= price else 0)
+        else:
+            if info:
+                print(f"{self.name}\nNon-ST:")
+            for i in range(-5, 0):
+                if info:
+                    print(f"{self.wearWeight(i + 5):.4f}\t{self.prices[i]}\t{price}")
+                p += self.wearWeight(i + 5) if self.prices[i] >= price else 0
+            if not (self.rarity == "G"):
+                if info:
+                    print("ST:")
+                for i in range(5):
+                    if info:
+                        print(f"{self.wearWeight(i):.4f}\t{self.prices[i]}\t{price}")
+                    ps += self.wearWeight(i) if self.prices[i] >= price else 0
+                p *= 0.9
+                ps *= 0.1
+            if info:
+                print(f"{p+ps}")
+            return p + ps
+
     def wearWeight(self, wearNum):
         if self.wear[0] > FLOATS[wearNum + 1] or self.wear[1] < FLOATS[wearNum]:
             return 0

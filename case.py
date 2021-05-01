@@ -30,12 +30,11 @@ class case:
     def calcProbability(self, info=False, drop=False):
         p = 0
         if info:
-            print(f"CASE: {self.name}\nCost\tWeight\tValue\tIncl\tName")
+            print(f"CASE: {self.name}\nCost\tWeight\tValue\tName")
         for s in self.skins:
             if info:
-                print(f"{s.value:.2f}\t{WEIGHTS[s.rarity] / self.skinRarities[s.rarity]:.4f}\t{WEIGHTS[s.rarity] / self.skinRarities[s.rarity]:.4f}\t{s.value > (KEYCOST if drop else self.totalprice)}\t{s.name}")
-            if s.value > (KEYCOST if drop else self.totalprice):
-                p += WEIGHTS[s.rarity] / self.skinRarities[s.rarity]
+                print(f"{s.value:.2f}\t{WEIGHTS[s.rarity] / self.skinRarities[s.rarity]:.4f}\t{(WEIGHTS[s.rarity] / self.skinRarities[s.rarity]) * s.calcProbability(KEYCOST if drop else self.totalprice):.4f}\t{s.name}")
+            p += (WEIGHTS[s.rarity] / self.skinRarities[s.rarity]) * s.calcProbability(KEYCOST if drop else self.totalprice, info=info)
         if info:
             print(f"Probability of making a profit (Dropped: {drop}): {p}")
         return p
