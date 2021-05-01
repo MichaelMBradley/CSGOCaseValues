@@ -10,7 +10,7 @@ Estimating expected value of each case in CSGO, using data scraped from CSGOStas
 
 ## Example
 
-When reading the sample data (`printsortedcaselist(analysis())`), the output is:
+When reading the sample data the output is:
 
 ```text
 EV      (Value  Price)  Name
@@ -50,4 +50,8 @@ EV      (Value  Price)  Name
 0.2369  ( 8.06  34.04)  eSports 2013 Case
 ```
 
-The sample data was recorded on 2021/04/09.
+The sample data was recorded on 2021/04/09, and this output can be generated with:
+
+```python
+printsortedcaselist(analysis())
+```

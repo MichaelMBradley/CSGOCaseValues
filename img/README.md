@@ -26,7 +26,7 @@ plotcases(readhistoricaldata())
 
 This image displays the relative average prices of the different wears as a multiple of the average price of the battle-scarred non-StatTrak skin. The subplots are divided by the rarity of the skins in question. Interestingly, the prices of well-worn skins are (in general) higher than the prices of field-tested skins.
 
-Generated on 2021-04-30 with:
+Generated using the sample data on 2021-04-30 with:
 
 ```python
 cases, skins, skinfo, prices, caseCost = readinfo()
