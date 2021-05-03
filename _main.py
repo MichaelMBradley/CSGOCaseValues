@@ -3,7 +3,7 @@ from vis import *
 
 
 def main():
-    saveinfo()
+    # saveinfo()
     plotcases(readhistoricaldata())
     # printhistoricaldata(mostrecent=True, value=lambda case: case.EV)
     # dropped(recentcases())
