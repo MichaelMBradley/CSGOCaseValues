@@ -1,6 +1,6 @@
-from datetime import date
 import json
 import os
+from datetime import date
 
 OPDN = os.path.dirname(__file__)
 
@@ -30,7 +30,7 @@ def saveinfo(sampledata=False, overwrite=True):
     else:
         FILEDEST = OPDN + "\\data\\" + f"{date.today()}"
         if not os.path.exists(FILEDEST):  # Data for new day -> create day directory
-            os.mkdir(FILEDEST)
+            os.makedirs(FILEDEST)
             FILEDEST = FILEDEST + "\\"
         else:  # Data already exists for today
             if overwrite:

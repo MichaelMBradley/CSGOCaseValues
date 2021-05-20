@@ -1,14 +1,18 @@
-from bs4 import BeautifulSoup as bs
 import re
-from urllib.request import urlopen, Request
-from status import *
+import sys
+from concurrent.futures import ProcessPoolExecutor
+from urllib.request import Request, urlopen
+
+from bs4 import BeautifulSoup as bs
+
 from filemanager import constants
+from status import *
 
 [SITE, RARITY, FULLRARITY] = constants(["SITE", "RARITY", "FULLRARITY"])
 
 
 def caseLinks():
-    mainFile = urlopen(Request(SITE, headers={"User-Agent": "Mozilla/5.0"})).read().decode("utf-8")  # Reads main page
+    mainFile = readpage(SITE)  # Reads main page
     cases = [l.start() for l in re.finditer(SITE + "/case/", mainFile)]  # Retrieves positions of links to cases
 
     for i in range(len(cases)):
@@ -32,7 +36,7 @@ def skinLinks(caseLinks):
 
     for link in caseLinks:
         t.swapto(0)
-        caseFile = urlopen(Request(link, headers={"User-Agent": "Mozilla/5.0"})).read().decode("utf-8")  # Reads case page
+        caseFile = readpage(link, progress)  # Reads case page
         t.swapto(1)
         skins.append([l.start() for l in re.finditer(SITE + "/skin/", caseFile)])  # Retrieves positions of links to skins
         priceStart = caseFile.find("CDN$ ") + 5
@@ -49,7 +53,7 @@ def skinLinks(caseLinks):
             iden = "/glove/"
 
         t.swapto(0)
-        knifeFile = urlopen(Request(link + "?" + special + "=1", headers={"User-Agent": "Mozilla/5.0"})).read().decode("utf-8")  # Reads knife/glove page
+        knifeFile = readpage(f"{link}?{special}=1", progress)
         t.swapto(1)
 
         knifePageLinks = [l.start() for l in re.finditer(link + "?" + special + "=1&page=", knifeFile)]  # Retrieves positions of links to other special pages, original page
@@ -58,7 +62,7 @@ def skinLinks(caseLinks):
         for i in range(len(knifePageLinks)):
             if not i == 0:
                 t.swapto(0)
-                knifePageLinks[i] = urlopen(Request(knifeFile[knifePageLinks[i] : knifeFile.find("&", knifePageLinks[i]) + 7], headers={"User-Agent": "Mozilla/5.0"})).read().decode("utf-8")  # If not last index (already file), open webpage with formatted link
+                knifePageLinks[i] = readpage(knifeFile[knifePageLinks[i] : knifeFile.find("&", knifePageLinks[i]) + 7], progress)  # If not last index (already file), open webpage with formatted link
                 t.swapto(1)
             knives = [l.start() for l in re.finditer(SITE + iden, knifePageLinks[i])]  # Retrieves positions of links to knives
             for j in range(len(knives)):
@@ -91,7 +95,7 @@ def getPrices(skinLinks):
             (wear, wearfo) = cache.get(skin, (None, None))
             if (wear, wearfo) == (None, None):
                 t.swapto(0)
-                loadpage = urlopen(Request(skin, headers={"User-Agent": "Mozilla/5.0"})).read().decode("utf-8")  # Reads page
+                loadpage = readpage(skin, progress)  # Reads page
                 t.swapto(1)
 
                 if not loadpage.find("★") == -1:  # Determines if skin is a knife or glove
@@ -135,6 +139,17 @@ def getPrices(skinLinks):
             progress.incrementandprint()
         prices.append(case)
         skinfo.append(casefo)
+    t.stop()
     t.results()
 
     return prices, skinfo
+
+
+def readpage(url, statusbar=None):
+    for i in range(5):
+        try:
+            return urlopen(Request(url, headers={"User-Agent": "Mozilla/5.0"}), timeout=5).read().decode("utf-8")
+        except:
+            if statusbar != None:
+                statusbar.warn(f"!Retrying page! ({i})")
+    sys.exit("Could not download webpage")

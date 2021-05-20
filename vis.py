@@ -97,12 +97,15 @@ def plotcases(datecases, value=lambda case: case.EV, legend=False, colour=True, 
     if legend:
         mp.subplot(1, 2, 1)
     for casename in cases.keys():
-        mp.plot(dates, cases[casename], label=casename)
+        mp.plot(dates[-len(cases[casename]) :], cases[casename], label=casename)
     if legend:
         mp.legend(loc="center left", bbox_to_anchor=(1, 0.5), ncol=1)  # Useless, too many colours
     colours = [line.get_color() if colour else "000000" for line in mp.gca().lines]
     start = [case.name for case in sortcases(datecases[0][1], value=value)]
     end = [case.name for case in sortcases(datecases[-1][1], value=value)]
+    for case in end:
+        if case not in start:
+            start.append(case)
     fixed = [""] * len(colours)
     for i in range(len(colours)):
         fixed[end.index(start[i])] = colours[i]
@@ -123,6 +126,8 @@ def plotcases(datecases, value=lambda case: case.EV, legend=False, colour=True, 
     if area != None:
         mp.ylim(area)
     mp.grid(axis="y")
+    ax = mp.gca()
+    ax.set_xticklabels(dates, rotation=90)
     mp.show()
 
 
@@ -146,6 +151,7 @@ def plotRelativePrices(prices, skinfo, skins):
     mp.legend()
     mp.tight_layout()
     mp.figure(figsize=(20, 20), clear=True)
+    mp.xticks(rotation=90)
     mp.show()
 
 
@@ -154,7 +160,6 @@ def printhistoricaldata(value=lambda case: case.EV, mostrecent=False):
         caselist = [["Most recent", recentcases()]]
     else:
         caselist = readhistoricaldata()
-    print(caselist)
     for [date, cases] in caselist:
         print(f"\n{date}")
         printsortedcaselist(cases, value)
@@ -208,3 +213,7 @@ def spread(names, textsize):
                         names[j][1] += move
                     else:
                         break
+
+
+def weekly(cases):
+    return cases[(len(cases) - 1) % 7 :: 7]
