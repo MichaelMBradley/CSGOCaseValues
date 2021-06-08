@@ -5,8 +5,12 @@ from filemanager import constants
 [RARITY] = constants(["RARITY"])
 
 
-def analysis(fname=""):
+def analysis(fname="", timing=None):
+    if timing != None:
+        timing.swapto(0)
     cases, skins, skinfo, prices, caseCost = readinfo(fname)
+    if timing != None:
+        timing.swapto(1)
     if cases != []:
         prices = fillData(prices, skinfo, skins)
         return toClass(cases, skins, skinfo, prices, caseCost)

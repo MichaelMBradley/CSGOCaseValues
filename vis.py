@@ -176,9 +176,11 @@ def readhistoricaldata():
     caselist = []
     files = glob.glob(os.path.dirname(__file__) + "\\data\\*")
     progress = statusbar(len(files), "Reading and analyzing files")
+    timing = timer(["Reading JSON", "Analyzing"])
     for fname in files:
-        caselist.append([fname.split("\\")[-1], analysis(fname)])
+        caselist.append([fname.split("\\")[-1], analysis(fname, timing)])
         progress.incrementandprint()
+    timing.results()
     return caselist
 
 

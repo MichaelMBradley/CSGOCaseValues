@@ -1,13 +1,35 @@
+import glob
 import json
 import os
 from datetime import date
 
+import orjson
+
 OPDN = os.path.dirname(__file__)
 
 
+def jsonload(file):
+    with open(file, "r") as f:
+        return json.load(f)
+
+
+def jsondump(file, data):
+    with open(file, "w") as f:
+        json.dump(data, f, indent=6)
+
+
+def orjsonload(file):
+    with open(file, "rb") as f:
+        return json.loads(f.read())
+
+
+def orjsondump(file, data):
+    with open(file, "wb") as f:
+        f.write(orjson.dumps(data))
+
+
 def constants(keys=[]):
-    with open(f"{OPDN}\\constants.json", "r") as const:
-        c = json.load(const)
+    c = jsonload(f"{OPDN}\\constants.json")
     if keys == []:
         return c
     else:
@@ -20,9 +42,32 @@ def constants(keys=[]):
 from webreader import *
 
 
+def readinfo(filename=""):
+    if filename == "":  # Default to reading sample data
+        FILEDEST = OPDN + "\\sampledata\\"
+    else:
+        if len(filename.split("\\")) == 1:  # If only day is provideed
+            FILEDEST = OPDN + "\\data\\" + filename
+        else:  # If full filename is provided
+            FILEDEST = filename
+        if os.path.exists(FILEDEST):
+            FILEDEST = FILEDEST + "\\"
+        else:
+            print("No such file.")
+            return [], [], [], [], []
+
+    cases = orjsonload(FILEDEST + "cases.json")
+    skins = orjsonload(FILEDEST + "skins.json")
+    skinfo = orjsonload(FILEDEST + "skinfo.json")
+    prices = orjsonload(FILEDEST + "prices.json")
+    caseprices = orjsonload(FILEDEST + "caseprices.json")
+
+    return cases, skins, skinfo, prices, caseprices
+
+
 def saveinfo(sampledata=False, overwrite=True):
     cases = caseLinks()
-    skins, caseCost = skinLinks(cases)
+    skins, caseprices = skinLinks(cases)
     prices, skinfo = getPrices(skins)
 
     if sampledata:  # If writing new sample data
@@ -39,42 +84,10 @@ def saveinfo(sampledata=False, overwrite=True):
                 print("File already exists.")
                 return [], [], [], [], []
 
-    with open(FILEDEST + "cases.json", "w") as filec:
-        json.dump(cases, filec, indent=6)
-    with open(FILEDEST + "skins.json", "w") as files:
-        json.dump(skins, files, indent=6)
-    with open(FILEDEST + "skinfo.json", "w") as filei:
-        json.dump(skinfo, filei, indent=6)
-    with open(FILEDEST + "prices.json", "w") as filep:
-        json.dump(prices, filep, indent=6)
-    with open(FILEDEST + "caseprices.json", "w") as filecp:
-        json.dump(caseCost, filecp, indent=6)
+    orjsondump(FILEDEST + "cases.json", cases)
+    orjsondump(FILEDEST + "skins.json", skins)
+    orjsondump(FILEDEST + "skinfo.json", skinfo)
+    orjsondump(FILEDEST + "prices.json", prices)
+    orjsondump(FILEDEST + "caseprices.json", caseprices)
 
-    return cases, skins, skinfo, prices, caseCost
-
-
-def readinfo(filename=""):
-    if filename == "":  # Default to reading sample data
-        FILEDEST = OPDN + "\\sampledata\\"
-    else:
-        if len(filename.split("\\")) == 1:  # If only day is provideed
-            FILEDEST = OPDN + "\\data\\" + filename
-        else:  # If full filename is provided
-            FILEDEST = filename
-        if os.path.exists(FILEDEST):
-            FILEDEST = FILEDEST + "\\"
-        else:
-            print("No such file.")
-            return [], [], [], [], []
-    with open(FILEDEST + "cases.json", "r") as filec:
-        cases = json.load(filec)
-    with open(FILEDEST + "skins.json", "r") as files:
-        skins = json.load(files)
-    with open(FILEDEST + "skinfo.json", "r") as filei:
-        skinfo = json.load(filei)
-    with open(FILEDEST + "prices.json", "r") as filep:
-        prices = json.load(filep)
-    with open(FILEDEST + "caseprices.json", "r") as filecp:
-        caseCost = json.load(filecp)
-
-    return cases, skins, skinfo, prices, caseCost
+    return cases, skins, skinfo, prices, caseprices
