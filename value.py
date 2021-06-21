@@ -13,6 +13,8 @@ def analysis(fname="", timing=None):
         timing.swapto(1)
     if cases != []:
         prices = fillData(prices, skinfo, skins)
+        if timing != None:
+            timing.swapto(2)
         return toClass(cases, skins, skinfo, prices, caseCost)
     else:
         return cases
