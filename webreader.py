@@ -40,7 +40,7 @@ def skinLinks(caseLinks):
         t.swapto(1)
         skins.append([l.start() for l in re.finditer(SITE + "/skin/", caseFile)])  # Retrieves positions of links to skins
         priceStart = caseFile.find("CDN$ ") + 5
-        caseCost.append(float(caseFile[priceStart : caseFile.find(" ", priceStart)]))
+        caseCost.append(float(caseFile[priceStart : min(caseFile.find(" ", priceStart), caseFile.find("\n", priceStart))]))
 
         for i in range(len(skins[-1])):
             skins[-1][i] = caseFile[skins[-1][i] : caseFile.find('"', skins[-1][i])]  # Formats skin links
