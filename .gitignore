@@ -1,5 +1,6 @@
 __pycache__/
 data/
+.idea/
 _scheduled.py
 _scheduled.bat
 _view.bat
