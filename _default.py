@@ -4,8 +4,8 @@ from vis import *
 
 def main():
     saveinfo()
-    plotcases(readhistoricaldata())
-    dropped(recentcases())
+    plot_cases(read_historical_data())
+    dropped(recent_cases())
 
 
 if __name__ == "__main__":

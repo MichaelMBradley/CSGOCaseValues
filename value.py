@@ -1,4 +1,4 @@
-from case import case, toClass
+from case import Case, to_class
 from filemanager import readinfo
 from filemanager import constants
 
@@ -6,21 +6,21 @@ from filemanager import constants
 
 
 def analysis(fname="", timing=None):
-    if timing != None:
+    if timing is not None:
         timing.swapto(0)
     cases, skins, skinfo, prices, caseCost = readinfo(fname)
-    if timing != None:
+    if timing is not None:
         timing.swapto(1)
-    if cases != []:
-        prices = fillData(prices, skinfo, skins)
-        if timing != None:
+    if cases:
+        prices = fill_data(prices, skinfo, skins)
+        if timing is not None:
             timing.swapto(2)
-        return toClass(cases, skins, skinfo, prices, caseCost)
+        return to_class(cases, skins, skinfo, prices, caseCost)
     else:
         return cases
 
 
-def fillData(prices, skinfo, skins):
+def fill_data(prices, skinfo, skins):
     rel = info(prices, skinfo, skins)
     for c in range(len(prices)):
         for s in range(len(prices[c])):
@@ -48,7 +48,7 @@ def info(prices, skinfo, skins):
     del rel[1][5:]  # Initialize jagged 2d array, delete unnecessary values (no stattrak gloves)
     for case in range(len(prices)):
         for skin in range(len(prices[case])):
-            if (len(prices[case][skin]) == 10 or len(prices[case][skin]) == 5) and (not -1 in prices[case][skin]) and (not -2 in prices[case][skin]):  # If all skins accounted for
+            if (len(prices[case][skin]) == 10 or len(prices[case][skin]) == 5) and (-1 not in prices[case][skin]) and (-2 not in prices[case][skin]):  # If all skins accounted for
                 for wear in range(len(prices[case][skin])):
                     rel[RARITY.index(skinfo[case][skin][-1])][wear] += prices[case][skin][wear] / prices[case][skin][-1]  # rel[rarity][wear] += (skin cost)/(BS skin cost)
     rel = [[round(i / relr[-1], 2) for i in relr][::-1] for relr in rel]  # [[(price of wear)/(price of BS)]for each wear]

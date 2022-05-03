@@ -5,41 +5,41 @@ from filemanager import constants
 [KEYCOST, WEIGHTS] = constants(["KEYCOST", "WEIGHTS"])
 
 
-class case:
-    def __init__(self, caseLink, casePrice, skinLinks, skinsPrices, skinsInfo):
-        self.link = caseLink
-        self.name = getName(caseLink)
-        self.price = casePrice
-        self.totalprice = self.price + KEYCOST
+class Case:
+    def __init__(self, case_link: str, case_price: float, skin_links: list[str], skins_prices, skins_info):
+        self.link = case_link
+        self.name = getName(case_link)
+        self.price = case_price
+        self.total_price = self.price + KEYCOST
         self.skins = []
         self.skinRarities = {"K": 0, "G": 0, "C": 0, "Cl": 0, "R": 0, "MS": 0}
-        self.addSkins(skinLinks, skinsPrices, skinsInfo)
-        self.value = self.calcValue()
-        self.valuens = self.calcValue(special=False)
-        self.EV = self.value / self.totalprice
-        self.EVD = self.value / KEYCOST  # Expected value if recieved as a drop
-        self.EVNS = self.valuens / self.totalprice  # Expected value without knives/gloves
-        self.prob = self.calcProbability()
-        self.probdrop = self.calcProbability(drop=True)
+        self.add_skins(skin_links, skins_prices, skins_info)
+        self.value = self.calc_value()
+        self.value_ns = self.calc_value(special=False)
+        self.EV = self.value / self.total_price
+        self.EV_D = self.value / KEYCOST  # Expected value if received as a drop
+        self.EV_NS = self.value_ns / self.total_price  # Expected value without knives/gloves
+        self.prob = self.calc_probability()
+        self.prob_drop = self.calc_probability(drop=True)
 
-    def addSkins(self, skinLinks, skinsPrices, skinsInfo):
-        for i in range(len(skinLinks)):
-            self.skins.append(skin(skinLinks[i], skinsPrices[i], skinsInfo[i]))
-            self.skinRarities[skinsInfo[i][2]] += 1
+    def add_skins(self, skin_links, skins_prices, skins_info):
+        for i in range(len(skin_links)):
+            self.skins.append(skin(skin_links[i], skins_prices[i], skins_info[i]))
+            self.skinRarities[skins_info[i][2]] += 1
 
-    def calcProbability(self, info=False, drop=False):
+    def calc_probability(self, info=False, drop=False):
         p = 0
         if info:
             print(f"CASE: {self.name}\nCost\tWeight\tValue\tName")
         for s in self.skins:
             if info:
-                print(f"{s.value:.2f}\t{WEIGHTS[s.rarity] / self.skinRarities[s.rarity]:.4f}\t{(WEIGHTS[s.rarity] / self.skinRarities[s.rarity]) * s.calcProbability(KEYCOST if drop else self.totalprice):.4f}\t{s.name}")
-            p += (WEIGHTS[s.rarity] / self.skinRarities[s.rarity]) * s.calcProbability(KEYCOST if drop else self.totalprice, info=info)
+                print(f"{s.value:.2f}\t{WEIGHTS[s.rarity] / self.skinRarities[s.rarity]:.4f}\t{(WEIGHTS[s.rarity] / self.skinRarities[s.rarity]) * s.calc_probability(KEYCOST if drop else self.total_price):.4f}\t{s.name}")
+            p += (WEIGHTS[s.rarity] / self.skinRarities[s.rarity]) * s.calc_probability(KEYCOST if drop else self.total_price, info=info)
         if info:
             print(f"Probability of making a profit (Dropped: {drop}): {p}")
         return p
 
-    def calcValue(self, info=False, special=True):
+    def calc_value(self, info=False, special=True):
         v = 0
         if info:
             print(f"CASE: {self.name}\nCost\tWeight\tValue\tName")
@@ -49,7 +49,7 @@ class case:
             if special or s.rarity not in ["K", "G"]:
                 v += s.value * WEIGHTS[s.rarity] / self.skinRarities[s.rarity]
         if info:
-            print(f"Total Value: {v:.2f}\nExpected Value: {v/self.totalprice:.2f}")
+            print(f"Total Value: {v:.2f}\nExpected Value: {v/self.total_price:.2f}")
         return v
 
     def __repr__(self):
@@ -59,8 +59,5 @@ class case:
         return f"{self.name} with an EV of {self.EV:.2f}"
 
 
-def toClass(cases, skins, skinfo, prices, caseCost):
-    properCases = []
-    for c in range(len(cases)):
-        properCases.append(case(cases[c], caseCost[c], skins[c], prices[c], skinfo[c]))
-    return properCases
+def to_class(cases, skins, skinfo, prices, case_cost) -> list[Case]:
+    return [Case(*info) for info in zip(cases, case_cost, skins, prices, skinfo)]
