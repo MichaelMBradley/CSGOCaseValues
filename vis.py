@@ -173,11 +173,11 @@ def print_sorted_case_list(case_list, value=lambda case: case.EV):
 def read_historical_data():
     case_list = []
     files = glob.glob(os.path.dirname(__file__) + "\\data\\*")
-    progress = statusbar(len(files), "Reading and analyzing files")
-    timing = timer(["Reading JSON", "Filling data", "Analyzing"])
+    progress = StatusBar(len(files), "Reading and analyzing files")
+    timing = Timer(["Reading JSON", "Filling data", "Analyzing"])
     for fname in files:
         case_list.append([fname.split("\\")[-1], analysis(fname, timing)])
-        progress.incrementandprint()
+        progress.increment_and_print()
     timing.results()
     return case_list
 

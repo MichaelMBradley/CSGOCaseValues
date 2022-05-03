@@ -7,14 +7,14 @@ from filemanager import constants
 
 def analysis(fname="", timing=None):
     if timing is not None:
-        timing.swapto(0)
+        timing.swap_to(0)
     cases, skins, skinfo, prices, caseCost = readinfo(fname)
     if timing is not None:
-        timing.swapto(1)
+        timing.swap_to(1)
     if cases:
         prices = fill_data(prices, skinfo, skins)
         if timing is not None:
-            timing.swapto(2)
+            timing.swap_to(2)
         return to_class(cases, skins, skinfo, prices, caseCost)
     else:
         return cases

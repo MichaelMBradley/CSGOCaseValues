@@ -1,11 +1,11 @@
-import re
+from re import finditer
 from urllib.request import urlopen, Request
 from filemanager import constants
 
 [RARITY] = constants(["RARITY"])
 
 
-def calcWeights():
+def calc_weights():
     weights = [2, 2, 5]
     for i in range(len(RARITY) - len(weights)):
         weights.append(weights[-1] * 5)
@@ -13,7 +13,7 @@ def calcWeights():
     print([str(w) + "/" + total for w in weights])
 
 
-def hasCompleteInfo(prices, skins):
+def has_complete_info(prices, skins):
     for c in range(len(prices)):
         for s in range(len(prices[c])):
             info = False
@@ -25,9 +25,9 @@ def hasCompleteInfo(prices, skins):
                 print(skins[c][s])
 
 
-def getName(link):
-    return link[[i.start() for i in re.finditer("/", link)][-1] + 1 :].replace("-", " ")  # Returns name from the last '/' until the end, replacing '-' with ' '
+def get_name(link):
+    return link[[i.start() for i in finditer("/", link)][-1] + 1 :].replace("-", " ")  # Returns name from the last '/' until the end, replacing '-' with ' '
 
 
-def printpage(link):
+def print_page(link):
     print(f'{urlopen(Request(link, headers={"User-Agent": "Mozilla/5.0"})).read().decode("utf-8")}\n{link}')

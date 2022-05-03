@@ -1,7 +1,7 @@
-import time
+from time import time
 
 
-def formattime(t, decimals=4):
+def format_time(t, decimals=4):
     proper = ""
     if t >= 86400:
         proper += str(int(t / 86400)) + "d "
@@ -13,64 +13,69 @@ def formattime(t, decimals=4):
     return proper
 
 
-class statusbar:
-    def printstatus(self):
-        percent = self.curr / self.length
-        print(f"\r{self.msg} | Completed {str(self.curr).rjust(self.currrjust)}/{self.length} |" + "█" * int(20 * percent) + "░" * (20 - int(20 * percent)) + f"| {percent:>4.0%} | Remaining: {formattime((self.length - self.curr) * self.rate, decimals=1)} | {self.notify}\t", end="", flush=True)
-        if self.curr == self.length:
-            print()  # Prints new line upon completion
-
-    def incrementstatus(self):
-        self.curr += 1
-        self.rate = (time.time() - self.starttime) / self.curr
-
-    def incrementandprint(self):
-        self.incrementstatus()
-        self.printstatus()
-
-    def warn(self, warning):
-        self.notify = warning
-        self.printstatus()
-        self.notify = ""
-
+class StatusBar:
     def __init__(self, length, msg):
         self.rate = 0.25  # Estimate
         self.curr = 0
         self.length = length
-        self.currrjust = len(str(self.length))
+        self.curr_rjust = len(str(self.length))
         self.msg = msg
-        self.starttime = time.time()
+        self.start_time = time()
         self.notify = ""
-        self.printstatus()
+        self.print_status()
+
+    def print_status(self):
+        percent = self.curr / self.length
+        print(f"\r{self.msg} | Completed {str(self.curr).rjust(self.curr_rjust)}/{self.length} |"
+              + "█" * int(20 * percent)
+              + "░" * (20 - int(20 * percent))
+              + f"| {percent:>4.0%} | Remaining: {format_time((self.length - self.curr) * self.rate, decimals=1)} | {self.notify}\t",
+              end="",
+              flush=True)
+        if self.curr == self.length:
+            print()  # Prints new line upon completion
+
+    def increment_status(self):
+        self.curr += 1
+        self.rate = (time() - self.start_time) / self.curr
+
+    def increment_and_print(self):
+        self.increment_status()
+        self.print_status()
+
+    def warn(self, warning):
+        self.notify = warning
+        self.print_status()
+        self.notify = ""
 
 
-class timer:
+class Timer:
     def __init__(self, names):
         self.names = names
         self.inc = [0] * len(names)
         self.times = [0] * len(names)
-        self.lasttime = -1
+        self.last_time = -1
         self.recording = -1
 
-    def swapto(self, index):
-        if self.lasttime == -1:
-            self.lasttime = time.time()
+    def swap_to(self, index):
+        if self.last_time == -1:
+            self.last_time = time()
             self.recording = index
         else:
-            prev = self.lasttime
-            self.lasttime = time.time()
+            prev = self.last_time
+            self.last_time = time()
             self.inc[self.recording] += 1
-            self.times[self.recording] += self.lasttime - prev
+            self.times[self.recording] += self.last_time - prev
             self.recording = index
 
-    def start(self, startindex=1):
-        self.swapto(startindex)
+    def start(self, start_index=1):
+        self.swap_to(start_index)
 
     def stop(self):
-        self.swapto(self.recording)
+        self.swap_to(self.recording)
         self.inc[self.recording] -= 1
 
     def results(self):
         for i in range(len(self.names)):
-            print(f"{self.names[i]}: {formattime(self.times[i])} ({formattime(self.times[i]/max(self.inc[i], 1))}/each)")
-        print(f"Total time: {formattime(sum(self.times))}\n")
+            print(f"{self.names[i]}: {format_time(self.times[i])} ({format_time(self.times[i] / max(self.inc[i], 1))}/each)")
+        print(f"Total time: {format_time(sum(self.times))}\n")

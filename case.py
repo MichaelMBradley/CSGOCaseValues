@@ -1,5 +1,5 @@
-from misc import getName
-from skin import skin
+from misc import get_name
+from skin import Skin
 from filemanager import constants
 
 [KEYCOST, WEIGHTS] = constants(["KEYCOST", "WEIGHTS"])
@@ -8,7 +8,7 @@ from filemanager import constants
 class Case:
     def __init__(self, case_link: str, case_price: float, skin_links: list[str], skins_prices, skins_info):
         self.link = case_link
-        self.name = getName(case_link)
+        self.name = get_name(case_link)
         self.price = case_price
         self.total_price = self.price + KEYCOST
         self.skins = []
@@ -24,7 +24,7 @@ class Case:
 
     def add_skins(self, skin_links, skins_prices, skins_info):
         for i in range(len(skin_links)):
-            self.skins.append(skin(skin_links[i], skins_prices[i], skins_info[i]))
+            self.skins.append(Skin(skin_links[i], skins_prices[i], skins_info[i]))
             self.skinRarities[skins_info[i][2]] += 1
 
     def calc_probability(self, info=False, drop=False):

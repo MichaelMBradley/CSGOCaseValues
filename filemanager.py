@@ -66,9 +66,9 @@ def readinfo(filename=""):
 
 
 def saveinfo(sampledata=False, overwrite=True):
-    cases = caseLinks()
-    skins, caseprices = skinLinks(cases)
-    prices, skinfo = getPrices(skins)
+    cases = case_links()
+    skins, caseprices = skin_links(cases)
+    prices, skinfo = get_prices(skins)
 
     if sampledata:  # If writing new sample data
         FILEDEST = OPDN + "\\sampledata\\"
