@@ -6,3 +6,6 @@ _scheduled.bat
 _view.bat
 _view.py
 _main.py
+
+.env
+venv/

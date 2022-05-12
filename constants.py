@@ -1,6 +1,9 @@
-{
-    "SITE": "https://csgostash.com",
-    "CONDITIONS": [
+from frozendict import frozendict
+
+
+class Constants:
+    site: str = "https://csgostash.com"
+    conditions: tuple[str] = (
         "FN",
         "MW",
         "FT",
@@ -11,85 +14,85 @@
         "ST-FT",
         "ST-WW",
         "ST-BS"
-    ],
-    "FULLCONDITIONS": [
-        "Factory New",
-        "Minimal Wear",
-        "Field Tested",
-        "Well Worn",
-        "Battle Scarred",
-        "StatTrak Factory New",
-        "StatTrak Minimal Wear",
-        "StatTrak Field Tested",
-        "StatTrak Well Worn",
-        "StatTrak Battle Scarred"
-    ],
-    "RARITY": [
+    )
+    full_conditions: tuple[str] = (
+                                      "Factory New",
+                                      "Minimal Wear",
+                                      "Field Tested",
+                                      "Well Worn",
+                                      "Battle Scarred",
+                                      "StatTrak Factory New",
+                                      "StatTrak Minimal Wear",
+                                      "StatTrak Field Tested",
+                                      "StatTrak Well Worn",
+                                      "StatTrak Battle Scarred"
+                                  ),
+    rarity: tuple[str] = (
         "K",
         "G",
         "C",
         "Cl",
         "R",
         "MS"
-    ],
-    "FULLRARITY": [
+    )
+    full_rarity: tuple[str] = (
         "Knife",
         "Gloves",
         "Covert",
         "Classified",
         "Restricted",
         "Mil-Spec"
-    ],
-    "KEYCOST": 3.16,
-    "WEIGHTS": {
+    )
+    key_cost: float = 3.16
+    weights: dict[str: float] = frozendict({
         "K": 0.00255754475703,
         "G": 0.00255754475703,
         "C": 0.00639386189258,
         "Cl": 0.0319693094629,
         "R": 0.159846547315,
         "MS": 0.799232736573
-    },
-    "FLOATS": [
+    })
+    floats: tuple[float] = (
         0,
         0.07,
         0.15,
         0.38,
         0.45,
         1
-    ],
-    "CASEGROUPS": {
-        "Chroma": [
+    )
+    case_groups: dict[str: tuple[str]] = frozendict({
+        "Chroma": (
             "Chroma Case",
             "Chroma 2 Case",
             "Chroma 3 Case"
-        ],
-        "Weapon": [
+        ),
+        "Weapon": (
             "CS:GO Weapon Case",
             "CS:GO Weapon Case 2",
             "CS:GO Weapon Case 3"
-        ],
-        "eSports": [
+        ),
+        "eSports": (
             "eSports 2013 Case",
             "eSports 2013 Winter Case",
             "eSports 2014 Summer Case"
-        ],
-        "Gamma": [
+        ),
+        "Gamma": (
             "Gamma Case",
             "Gamma Case 2"
-        ],
-        "Operation": [
+        ),
+        "Operation": (
             "Operation Bravo Case",
             "Operation Breakout Weapon Case",
             "Operation Hydra Case",
             "Operation Pheonix Weapon Case",
             "Operation Vanguard Weapon Case",
             "Operation Wildfire Case"
-        ],
-        "Spectrum": [
+        ),
+        "Spectrum": (
             "Spectrum Case",
             "Spectrum 2 Case"
-        ],
-        "Other": [
+        ),
+        "Other": (
             "Clutch Case",
             "Danger Zone Case",
             "Falchion Case",
@@ -99,23 +102,23 @@
             "Revolver Case",
             "Shadow Case",
             "Winter Offensive Weapon Case"
-        ],
-        "Prime": [
+        ),
+        "Prime": (
             "Fracture Case",
             "Prisma 2 Case",
             "Prisma Case",
             "Danger Zone Case",
             "Clutch Case"
-        ],
-        "Non-Prime": [
+        ),
+        "Non-Prime": (
             "CS20 Case",
             "Horizon Case",
             "Spectrum 2 Case",
             "Gamma 2 Case",
             "Chroma 3 Case",
             "Revolver Case"
-        ],
-        "Rare": [
+        ),
+        "Rare": (
             "CS:GO Weapon Case",
             "Operation Bravo Case",
             "CS:GO Weapon Case 2",
@@ -135,6 +138,5 @@
             "Spectrum Case",
             "Operation Hydra Case",
             "Snakebite Case"
-        ]
-    }
-}
+        )
+    })

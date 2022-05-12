@@ -5,6 +5,8 @@ from datetime import date
 
 import orjson
 
+from webreader import *
+
 OPDN = os.path.dirname(__file__)
 
 
@@ -26,20 +28,6 @@ def orjsonload(file):
 def orjsondump(file, data):
     with open(file, "wb") as f:
         f.write(orjson.dumps(data))
-
-
-def constants(keys=[]):
-    c = jsonload(f"{OPDN}\\constants.json")
-    if keys == []:
-        return c
-    else:
-        v = []
-        for k in keys:
-            v.append(c.get(k, None))
-        return v
-
-
-from webreader import *
 
 
 def readinfo(filename=""):
