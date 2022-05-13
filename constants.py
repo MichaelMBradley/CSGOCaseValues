@@ -1,9 +1,19 @@
 from frozendict import frozendict
 
+from misc import calc_probability
+
 
 class Constants:
-    site: str = "https://csgostash.com"
-    conditions: tuple[str] = (
+    """
+    Class containing all constants. Cannot be instantiated.
+    """
+
+    SITE: str = "https://csgostash.com"
+    """
+    URL of CSGOStash
+    """
+
+    CONDITIONS: tuple[str] = (
         "FN",
         "MW",
         "FT",
@@ -15,7 +25,11 @@ class Constants:
         "ST-WW",
         "ST-BS"
     )
-    full_conditions: tuple[str] = (
+    """
+    Shortened names of the existing conditions.
+    """
+
+    FULL_CONDITIONS: tuple[str] = (
                                       "Factory New",
                                       "Minimal Wear",
                                       "Field Tested",
@@ -27,7 +41,11 @@ class Constants:
                                       "StatTrak Well Worn",
                                       "StatTrak Battle Scarred"
                                   ),
-    rarity: tuple[str] = (
+    """
+    Full names of the existing conditions.
+    """
+
+    RARITY: tuple[str] = (
         "K",
         "G",
         "C",
@@ -35,7 +53,11 @@ class Constants:
         "R",
         "MS"
     )
-    full_rarity: tuple[str] = (
+    """
+    Shortened names of the existing rarities.
+    """
+
+    FULL_RARITY: tuple[str] = (
         "Knife",
         "Gloves",
         "Covert",
@@ -43,16 +65,26 @@ class Constants:
         "Restricted",
         "Mil-Spec"
     )
-    key_cost: float = 3.16
-    weights: dict[str: float] = frozendict({
-        "K": 0.00255754475703,
-        "G": 0.00255754475703,
-        "C": 0.00639386189258,
-        "Cl": 0.0319693094629,
-        "R": 0.159846547315,
-        "MS": 0.799232736573
-    })
-    floats: tuple[float] = (
+    """
+    Full names of the existing rarities.
+    """
+
+    KEY_COST: float = 3.16
+    """
+    Cost of a key, in CAD.
+    """
+
+    WEIGHTS: dict[str: float] = frozendict(
+        {
+            rarity: probability for (rarity, probability) in zip(RARITY, calc_probability())
+        }
+    )
+    """
+    Probability of each rarity being dropped.
+    Can be calculated using misc.calc_weights()
+    """
+
+    FLOATS: tuple[float] = (
         0,
         0.07,
         0.15,
@@ -60,7 +92,11 @@ class Constants:
         0.45,
         1
     )
-    case_groups: dict[str: tuple[str]] = frozendict({
+    """
+    Stopping points between skin wears.
+    """
+
+    CASE_GROUPS: dict[str: tuple[str]] = frozendict({
         "Chroma": (
             "Chroma Case",
             "Chroma 2 Case",
@@ -140,3 +176,7 @@ class Constants:
             "Snakebite Case"
         )
     })
+    """
+    Groupings of cases. Some are arbitrary, but it helps for graphing.
+    """
+

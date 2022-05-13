@@ -8,4 +8,4 @@ _view.py
 _main.py
 
 .env
-venv/
+.venv/

@@ -1,35 +1,55 @@
-from re import finditer
-from urllib.request import urlopen, Request
-from filemanager import constants
+def calc_fractions() -> tuple[str]:
+    """
+    Calculate the string formatted fraction representing the probability of getting dropped each possible rarity.
+    Will always return: ('  2/782', '  2/782', '  5/782', ' 25/782', '125/782', '625/782')
+    """
+    weights = calc_weights()
+    total = sum(weights[1:])
+    return tuple([f"{w:>3}/{total}" for w in weights])
 
-[RARITY] = constants(["RARITY"])
+
+def calc_probability() -> tuple[float]:
+    """
+    Calculate the probability of getting dropped each possible rarity.
+    Will always return roughly: (0.0026, 0.0026, 0.0064, 0.0320, 0.1598, 0.7992)
+    """
+    weights = calc_weights()
+    total = sum(weights[1:])
+    # float(...) not necessary but PyCharm gets mad at me if I don't
+    return tuple((float(weight / total) for weight in weights))
 
 
-def calc_weights() -> None:
+def calc_weights() -> tuple[int]:
+    """
+    Calculate the weighting of each possible rarity.
+    Knife and gloves counted separately for organizational purposes, despite having the same value
+    Will always return: (2, 2, 5, 25, 125, 625)
+    """
     weights = [2, 2, 5]
-    for i in range(len(RARITY) - len(weights)):
+    # 3 = len(Constants.RARITY) - len(weights)
+    for _ in range(3):
         weights.append(weights[-1] * 5)
-    total = str(sum(weights[1:]))
-    print([str(w) + "/" + total for w in weights])
+    # int(...) not necessary but PyCharm gets mad at me if I don't
+    return tuple((int(weight) for weight in weights))
 
 
-def has_complete_info(prices: list[list[list[float]]], skins: list[list[str]]) -> None:
-    # TODO: avoid `range(len(...))`
-    for c in range(len(prices)):
-        for s in range(len(prices[c])):
-            info = False
-            for price in prices[c][s]:
-                if not (price == -1 or price == -2):
-                    info = True
-                    break
-            if not info:
-                print(skins[c][s])
+def has_incomplete_info(prices: list[list[list[float]]], skins: list[list[str]]) -> list[str]:
+    """
+    prices: jagged 3d list ordered by [case][skin][wear/st]
+    skins: jagged 2d list of skin names ordered by [case][skin]
+
+    Returns list of skins with missing prices.
+    """
+    incomplete: list[str] = []
+    for (i, case) in enumerate(prices):
+        for (j, skin) in enumerate(case):
+            if any([price in (-1, -2) for price in skin]):
+                incomplete.append(skins[i][j])
+    return incomplete
 
 
 def get_name(link: str) -> str:
-    # Returns name from the last '/' until the end, replacing '-' with ' '
-    return link[[i.start() for i in finditer("/", link)][-1] + 1 :].replace("-", " ")
-
-
-def print_page(link: str) -> None:
-    print(f'{urlopen(Request(link, headers={"User-Agent": "Mozilla/5.0"})).read().decode("utf-8")}\n{link}')
+    """
+    Formats the url into a case/skin name.
+    """
+    return link[-link[::-1].index('/'):].replace("-", " ")

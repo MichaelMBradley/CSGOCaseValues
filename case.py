@@ -33,8 +33,8 @@ class Case:
             print(f"CASE: {self.name}\nCost\tWeight\tValue\tName")
         for s in self.skins:
             if info:
-                print(f"{s.value:.2f}\t{WEIGHTS[s.rarity] / self.skinRarities[s.rarity]:.4f}\t{(WEIGHTS[s.rarity] / self.skinRarities[s.rarity]) * s.calc_probability(KEYCOST if drop else self.total_price):.4f}\t{s.name}")
-            p += (WEIGHTS[s.rarity] / self.skinRarities[s.rarity]) * s.calc_probability(KEYCOST if drop else self.total_price, info=info)
+                print(f"{s.value:.2f}\t{WEIGHTS[s.RARITY] / self.skinRarities[s.RARITY]:.4f}\t{(WEIGHTS[s.RARITY] / self.skinRarities[s.RARITY]) * s.calc_probability(KEYCOST if drop else self.total_price):.4f}\t{s.name}")
+            p += (WEIGHTS[s.RARITY] / self.skinRarities[s.RARITY]) * s.calc_probability(KEYCOST if drop else self.total_price, info=info)
         if info:
             print(f"Probability of making a profit (Dropped: {drop}): {p}")
         return p
@@ -44,10 +44,10 @@ class Case:
         if info:
             print(f"CASE: {self.name}\nCost\tWeight\tValue\tName")
         for s in self.skins:
-            if info and (special or s.rarity not in ["K", "G"]):
-                print(f"{s.value:.2f}\t{WEIGHTS[s.rarity] / self.skinRarities[s.rarity]:.4f}\t{s.value * WEIGHTS[s.rarity] / self.skinRarities[s.rarity]:.2f}\t{s.name}")
-            if special or s.rarity not in ["K", "G"]:
-                v += s.value * WEIGHTS[s.rarity] / self.skinRarities[s.rarity]
+            if info and (special or s.RARITY not in ["K", "G"]):
+                print(f"{s.value:.2f}\t{WEIGHTS[s.RARITY] / self.skinRarities[s.RARITY]:.4f}\t{s.value * WEIGHTS[s.RARITY] / self.skinRarities[s.RARITY]:.2f}\t{s.name}")
+            if special or s.RARITY not in ["K", "G"]:
+                v += s.value * WEIGHTS[s.RARITY] / self.skinRarities[s.RARITY]
         if info:
             print(f"Total Value: {v:.2f}\nExpected Value: {v/self.total_price:.2f}")
         return v
