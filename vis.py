@@ -6,9 +6,7 @@ from matplotlib.ticker import MultipleLocator
 import os
 from value import *
 from status import *
-from filemanager import constants
-
-[CASEGROUPS, FULLRARITY, CONDITIONS] = constants(["CASEGROUPS", "FULLRARITY", "CONDITIONS"])
+from constants import Constants
 
 
 def dropped(cases):
@@ -17,19 +15,22 @@ def dropped(cases):
     np = []
     r = []
     for case in cases:
-        if case.name in CASEGROUPS["Prime"]:
+        if case.name in Constants.CASE_GROUPS["Prime"]:
             p.append(case)
-        if case.name in CASEGROUPS["Non-Prime"]:
+        if case.name in Constants.CASE_GROUPS["Non-Prime"]:
             np.append(case)
-        if case.name in CASEGROUPS["Rare"]:
+        if case.name in Constants.CASE_GROUPS["Rare"]:
             r.append(case)
     print(f"{'':>35} \t(Drop) (Bought)\t(Probability of getting an item worth more than a key)")
     print("Prime drops expected value:")
-    *map(print_case, p),
+    for case in p:
+        print_case(case)
     print("Non-Prime drops expected value:")
-    *map(print_case, np),
+    for case in np:
+        print_case(case)
     print("Rare drops expected value:")
-    *map(print_case, r),
+    for case in r:
+        print_case(case)
 
 
 def groups(datecases, allowed):
@@ -59,7 +60,7 @@ def groups(datecases, allowed):
         new_cases = []
         for case in cases:
             for g in allowed:
-                if case.name in CASEGROUPS[g]:
+                if case.name in Constants.CASE_GROUPS[g]:
                     new_cases.append(case)
                     break
         date[1] = new_cases
@@ -134,15 +135,15 @@ def plot_relative_prices(prices, skinfo, skins):
     rel = info(prices, skinfo, skins)
     plt.plot([0])
     for i in range(len(rel)):
-        ax = plt.subplot(3, 2, i + 1, ylabel=FULLRARITY[i])  # New subplot for each rarity level
-        ax.plot(CONDITIONS[5:][::-1], rel[i][:5], label="Normal")
+        ax = plt.subplot(3, 2, i + 1, ylabel=Constants.FULL_RARITY[i])  # New subplot for each rarity level
+        ax.plot(Constants.CONDITIONS[5:][::-1], rel[i][:5], label="Normal")
 
-        for x, y in zip(CONDITIONS[5:][::-1], rel[i][:5]):  # Plots normal prices
+        for x, y in zip(Constants.CONDITIONS[5:][::-1], rel[i][:5]):  # Plots normal prices
             ax.annotate(str(y), xy=(x, y))  # Prints relative price for each data point
 
         if i != 1:
-            ax.plot(CONDITIONS[5:][::-1], rel[i][5:], label="StatTrak")
-            for x, y in zip(CONDITIONS[5:][::-1], rel[i][5:]):  # Plots StatTrak prices
+            ax.plot(Constants.CONDITIONS[5:][::-1], rel[i][5:], label="StatTrak")
+            for x, y in zip(Constants.CONDITIONS[5:][::-1], rel[i][5:]):  # Plots StatTrak prices
                 ax.annotate(str(y), xy=(x, y))
         plt.subplot(ax)
 

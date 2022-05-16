@@ -3,17 +3,8 @@ from urllib.request import Request, urlopen
 from urllib.error import URLError
 from bs4 import BeautifulSoup
 
-from case import Case
 from constants import Constants
-from skin import Skin
 from status import *
-
-
-def get_cases() -> list[Case]:
-    """
-    Returns the cases in the game right now.
-    """
-    return [*map(Case, get_case_urls())]
 
 
 def get_case_urls() -> list[str]:
@@ -31,13 +22,6 @@ def get_name_from_url(url: str) -> str:
     return url[-url[::-1].index('/'):].replace("-", " ")
 
 
-def get_skins(case_page: str) -> list[Skin]:
-    """
-    Returns the skins associated with a given case.
-    """
-    pass
-
-
 def read_page(url: str, status_bar: StatusBar | None = None) -> str:
     """
     Returns a string containing the contents of the page specified by the url.
@@ -52,7 +36,14 @@ def read_page(url: str, status_bar: StatusBar | None = None) -> str:
     exit("Could not download webpage")
 
 
-def get_skin_links(case_links: list[str]) -> tuple[list[list[int]], list[float]]:
+def get_skin_links(case_page: str) -> list[str]:
+    """
+    Returns the skins associated with a given case.
+    """
+    pass
+
+
+def get_skin_links_old(case_links: list[str]) -> tuple[list[list[int]], list[float]]:
     skins = []
     case_cost = []
     progress = StatusBar(len(case_links), "Finding skins")

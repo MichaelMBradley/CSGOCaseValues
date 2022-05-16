@@ -1,6 +1,6 @@
 from constants import Constants
 from skin import Skin
-from webreader import get_name_from_url, get_skins, read_page
+from webreader import get_case_urls, get_name_from_url, get_skin_links, read_page
 
 
 class Case:
@@ -11,7 +11,7 @@ class Case:
         case_page = read_page(link)
         self.price = get_case_price(case_page)
         self.total_price = self.price + Constants.KEY_COST
-        self.skins = get_skins(case_page)
+        self.skins = [*map(Skin, get_skin_links(case_page))]
 
         self.skinRarities: dict[str: int] = {}
         self.count_rarities()
@@ -68,6 +68,13 @@ class Case:
 
     def __str__(self):
         return f"{self.name} with an EV of {self.EV:.2f}"
+
+
+def get_cases() -> list[Case]:
+    """
+    Returns the cases in the game right now.
+    """
+    return [*map(Case, get_case_urls())]
 
 
 def get_case_price(case_page: str) -> float:
