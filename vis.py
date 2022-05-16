@@ -2,7 +2,7 @@ import glob
 import matplotlib.pyplot as plt
 import os
 
-from droppable.case import Case
+from drops.case import Case
 from value import *
 from status import *
 from constants import Constants
