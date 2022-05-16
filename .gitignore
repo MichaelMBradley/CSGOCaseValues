@@ -1,6 +1,5 @@
 # Project specific
 data/
-_*
 .idea/
 
 # Byte-compiled / optimized / DLL files

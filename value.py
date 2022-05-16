@@ -1,4 +1,4 @@
-from case import Case, to_class
+from drops.case import to_class
 from filemanager import readinfo
 from constants import Constants
 

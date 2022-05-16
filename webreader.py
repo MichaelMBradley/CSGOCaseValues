@@ -15,13 +15,6 @@ def get_case_urls() -> list[str]:
     return [*{link.group() for link in finditer(fr"({Constants.SITE}/case/\d+/[\w\-:&;]+)", read_page(Constants.SITE))}]
 
 
-def get_name_from_url(url: str) -> str:
-    """
-    Formats the url into a case/skin name.
-    """
-    return url[-url[::-1].index('/'):].replace("-", " ")
-
-
 def read_page(url: str, status_bar: StatusBar | None = None) -> str:
     """
     Returns a string containing the contents of the page specified by the url.
