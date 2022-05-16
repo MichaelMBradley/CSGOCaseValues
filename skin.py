@@ -1,20 +1,19 @@
 from constants import Constants
-from webreader import get_name_from_url, read_page
+from webreader import read_page
 
 
-# TODO: Subclass skin? knife/glove/StatTrak/souvenir/vanilla? Superclass Droppable?
 class Skin:
     def __init__(self, url: str):
-        self.link = url
-        self.name = get_name_from_url(url)
+        self.link: str = url
+        self.name: str = get_name_from_url(url)
 
         page = read_page(url)
-        self.prices = get_skin_prices(page)
-        self.rarity = get_skin_rarity(page)
-        self.float_range = get_skin_float_range(page)
+        self.prices: list[float] = get_skin_prices(page)
+        self.rarity: str = get_skin_rarity(page)
+        self.float_range: tuple[float, float] = get_skin_float_range(page)
 
-        self.wearRange = self.float_range[1] - self.float_range[0]
-        self.value = self.calc_value()
+        self.wearRange: float = self.float_range[1] - self.float_range[0]
+        self.value: float = self.calc_value()
 
     def calc_value(self) -> float:
         """
