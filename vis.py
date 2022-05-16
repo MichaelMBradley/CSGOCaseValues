@@ -8,28 +8,37 @@ from status import *
 from constants import Constants
 
 
-def dropped(cases):
-    def print_case(case): print(f"{case.name:>35}:\t{case.EV_D:.4f}\t{case.EV:.4f}\t{case.prob_drop:.4f}")
+def dropped(cases: list[Case]) -> None:
+    """
+    Prints some stats about various types of cases.
+    """
+    def print_case(case: Case) -> None:
+        """
+        Hidden function to nicely print a case.
+        TODO: Make this a case instance function
+        """
+        print(f"{case.name:>35}:\t{case.EV_D:.4f}\t{case.EV:.4f}\t{case.prob_drop:.4f}")
+
     p = []
     np = []
     r = []
-    for case in cases:
-        if case.name in Constants.CASE_GROUPS["Prime"]:
-            p.append(case)
-        if case.name in Constants.CASE_GROUPS["Non-Prime"]:
-            np.append(case)
-        if case.name in Constants.CASE_GROUPS["Rare"]:
-            r.append(case)
+    for sort_case in cases:
+        if sort_case.name in Constants.CASE_GROUPS["Prime"]:
+            p.append(sort_case)
+        if sort_case.name in Constants.CASE_GROUPS["Non-Prime"]:
+            np.append(sort_case)
+        if sort_case.name in Constants.CASE_GROUPS["Rare"]:
+            r.append(sort_case)
     print(f"{'':>35} \t(Drop) (Bought)\t(Probability of getting an item worth more than a key)")
     print("Prime drops expected value:")
-    for case in p:
-        print_case(case)
+    for prime in p:
+        print_case(prime)
     print("Non-Prime drops expected value:")
-    for case in np:
-        print_case(case)
+    for non_prime in np:
+        print_case(non_prime)
     print("Rare drops expected value:")
-    for case in r:
-        print_case(case)
+    for rare in r:
+        print_case(rare)
 
 
 def groups(datecases, allowed):
