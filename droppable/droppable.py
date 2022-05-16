@@ -1,4 +1,5 @@
 from abc import ABC
+import logging
 
 
 def get_name_from_url(url: str) -> str:
@@ -9,4 +10,8 @@ def get_name_from_url(url: str) -> str:
 
 
 class Droppable(ABC):
-    pass
+    def __init__(self, url: str, delay_init: bool):
+        self.url: str = url
+        self.name: str = get_name_from_url(url)
+
+        logging.info(f"Initializing logging, {delay_init=}")

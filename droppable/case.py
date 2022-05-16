@@ -1,12 +1,12 @@
 from constants import Constants
+from droppable.droppable import Droppable
 from skin import Skin
-from webreader import get_case_urls, get_name_from_url, get_skin_links, read_page
+from webreader import get_case_urls, get_skin_links, read_page
 
 
-class Case:
+class Case(Droppable):
     def __init__(self, link: str, delay_init: bool = False):
-        self.link: str = link
-        self.name: str = get_name_from_url(link)
+        super().__init__(link, delay_init)
 
         if delay_init:
             return

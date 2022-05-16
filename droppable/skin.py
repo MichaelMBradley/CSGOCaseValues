@@ -1,11 +1,14 @@
 from constants import Constants
+from droppable.droppable import Droppable
 from webreader import read_page
 
 
-class Skin:
-    def __init__(self, url: str):
-        self.link: str = url
-        self.name: str = get_name_from_url(url)
+class Skin(Droppable):
+    def __init__(self, url: str, delay_init: bool):
+        super().__init__(url, delay_init)
+
+        if delay_init:
+            return
 
         page = read_page(url)
         self.prices: list[float] = get_skin_prices(page)
