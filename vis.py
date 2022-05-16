@@ -1,8 +1,5 @@
-from case import to_class
-from filemanager import readinfo
 import glob
 import matplotlib.pyplot as plt
-from matplotlib.ticker import MultipleLocator
 import os
 from value import *
 from status import *
