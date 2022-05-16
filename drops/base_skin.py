@@ -1,5 +1,5 @@
 from constants import Constants
-from drops.droppable import Droppable
+from droppable import Droppable
 from webreader import read_page
 
 

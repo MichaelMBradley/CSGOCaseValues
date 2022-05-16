@@ -1,5 +1,5 @@
 from constants import Constants
-from drops.droppable import Droppable
+from droppable import Droppable
 from base_skin import Skin
 from webreader import get_case_urls, get_skin_links, read_page
 
