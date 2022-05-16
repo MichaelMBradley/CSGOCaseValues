@@ -1,6 +1,39 @@
 from frozendict import frozendict
 
-from misc import calc_probability
+
+def calc_fractions() -> tuple[str]:
+    """
+    Calculate the string formatted fraction representing the probability of getting dropped each possible rarity.
+    Will always return: ('  2/782', '  2/782', '  5/782', ' 25/782', '125/782', '625/782')
+    """
+    weights = calc_weights()
+    total = sum(weights[1:])
+    return tuple([f"{w:>3}/{total}" for w in weights])
+
+
+def calc_probability() -> tuple[float]:
+    """
+    Calculate the probability of getting dropped each possible rarity.
+    Will always return roughly: (0.0026, 0.0026, 0.0064, 0.0320, 0.1598, 0.7992)
+    """
+    weights = calc_weights()
+    total = sum(weights[1:])
+    # float(...) not necessary but PyCharm gets mad at me if I don't
+    return tuple((float(weight / total) for weight in weights))
+
+
+def calc_weights() -> tuple[int]:
+    """
+    Calculate the weighting of each possible rarity.
+    Knife and gloves counted separately for organizational purposes, despite having the same value
+    Will always return: (2, 2, 5, 25, 125, 625)
+    """
+    weights = [2, 2, 5]
+    # 3 = len(Constants.RARITY) - len(weights)
+    for _ in range(3):
+        weights.append(weights[-1] * 5)
+    # int(...) not necessary but PyCharm gets mad at me if I don't
+    return tuple((int(weight) for weight in weights))
 
 
 class Constants:
@@ -120,7 +153,7 @@ class Constants:
             "Operation Bravo Case",
             "Operation Breakout Weapon Case",
             "Operation Hydra Case",
-            "Operation Pheonix Weapon Case",
+            "Operation Phoenix Weapon Case",
             "Operation Vanguard Weapon Case",
             "Operation Wildfire Case"
         ),
@@ -134,7 +167,7 @@ class Constants:
             "Falchion Case",
             "Glove Case",
             "Horizon Case",
-            "Hunstman Weapon Case",
+            "Huntsman Weapon Case",
             "Revolver Case",
             "Shadow Case",
             "Winter Offensive Weapon Case"
@@ -160,7 +193,7 @@ class Constants:
             "CS:GO Weapon Case 2",
             "Winter Offensive Weapon Case",
             "CS:GO Weapon Case 3",
-            "Operation Pheonix Weapon Case",
+            "Operation Phoenix Weapon Case",
             "Huntsman Weapon Case",
             "Operation Breakout Weapon Case",
             "Operation Vanguard Weapon Case",
@@ -179,4 +212,3 @@ class Constants:
     """
     Groupings of cases. Some are arbitrary, but it helps for graphing.
     """
-

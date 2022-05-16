@@ -1,31 +1,58 @@
 from re import finditer
 from urllib.request import Request, urlopen
-from bs4 import BeautifulSoup as bs
+from urllib.error import URLError
+from bs4 import BeautifulSoup
 
-from filemanager import constants
+from case import Case
+from constants import Constants
+from skin import Skin
 from status import *
 
-[SITE, RARITY, FULLRARITY] = constants(["SITE", "RARITY", "FULLRARITY"])
+
+def get_cases() -> list[Case]:
+    """
+    Returns the cases in the game right now.
+    """
+    return [*map(Case, get_case_urls())]
 
 
-def case_links():
-    main_file = read_page(SITE)  # Reads main page
-    cases = [links.start() for links in finditer(SITE + "/case/", main_file)]  # Retrieve positions of links to cases
-
-    for i in range(len(cases)):
-        cases[i] = main_file[cases[i] : main_file.find('"', cases[i])]  # Formats case links
-
-    k = 0
-    while k < len(cases):  # Must iterate with while loop to avoid skipping elements
-        if "Knives=1" in cases[k] or "Gloves=1" in cases[k] or cases[k] in cases[k + 1 :]:  # Pops invalid elements
-            cases.pop(k)
-        else:
-            k += 1  # If current index is valid check next index
-
-    return cases
+def get_case_urls() -> list[str]:
+    """
+    Returns a list of links to the pages of cases on CSGOStash.
+    """
+    # [*{...}] <- Take the list of links, put it into a set (remove duplicates), and then turn it back into a list
+    return [*{link.group() for link in finditer(fr"({Constants.SITE}/case/\d+/[\w\-:&;]+)", read_page(Constants.SITE))}]
 
 
-def skin_links(case_links):
+def get_name_from_url(url: str) -> str:
+    """
+    Formats the url into a case/skin name.
+    """
+    return url[-url[::-1].index('/'):].replace("-", " ")
+
+
+def get_skins(case_page: str) -> list[Skin]:
+    """
+    Returns the skins associated with a given case.
+    """
+    pass
+
+
+def read_page(url: str, status_bar: StatusBar | None = None) -> str:
+    """
+    Returns a string containing the contents of the page specified by the url.
+    """
+    # TODO: There's gotta be a better way
+    for i in range(5):
+        try:
+            return urlopen(Request(url, headers={"User-Agent": "Mozilla/5.0"}), timeout=5).read().decode("utf-8")
+        except URLError:
+            if status_bar:
+                status_bar.warn(f"!Retrying page! ({i})")
+    exit("Could not download webpage")
+
+
+def get_skin_links(case_links: list[str]) -> tuple[list[list[int]], list[float]]:
     skins = []
     case_cost = []
     progress = StatusBar(len(case_links), "Finding skins")
@@ -35,9 +62,9 @@ def skin_links(case_links):
         t.swap_to(0)
         case_file = read_page(link, progress)  # Reads case page
         t.swap_to(1)
-        skins.append([links.start() for links in finditer(SITE + "/skin/", case_file)])  # Retrieve positions of links to skins
+        skins.append([links.start() for links in finditer(Constants.SITE + "/skin/", case_file)])  # Retrieve positions of links to skins
         price_start = case_file.find("CDN$ ") + 5
-        case_cost.append(float(case_file[price_start : min(case_file.find(" ", price_start), case_file.find("\n", price_start))]))
+        case_cost.append(float(case_file[price_start: min(case_file.find(" ", price_start), case_file.find("\n", price_start))]))
 
         for i in range(len(skins[-1])):
             skins[-1][i] = case_file[skins[-1][i] : case_file.find('"', skins[-1][i])]  # Formats skin links
@@ -57,11 +84,11 @@ def skin_links(case_links):
         knife_page_links.insert(0, knife_file)
 
         for i in range(len(knife_page_links)):
-            if not i == 0:
+            if i != 0:
                 t.swap_to(0)
                 knife_page_links[i] = read_page(knife_file[knife_page_links[i]: knife_file.find("&", knife_page_links[i]) + 7], progress)  # If not last index (already file), open webpage with formatted link
                 t.swap_to(1)
-            knives = [l.start() for l in finditer(SITE + iden, knife_page_links[i])]  # Retrieves positions of links to knives
+            knives = [link.start() for link in finditer(Constants.SITE + iden, knife_page_links[i])]  # Retrieves positions of links to knives
             for j in range(len(knives)):
                 knives[j] = knife_page_links[i][knives[j]: knife_page_links[i].find('"', knives[j])]  # Formats knife links
             skins[-1] += knives  # Combines knife list with skin list
@@ -78,8 +105,8 @@ def skin_links(case_links):
     return skins, case_cost
 
 
-def get_prices(skin_links):
-    prices = []
+def get_prices(skin_links: list[list[str]]) -> tuple[list[list[list[float]]], list[list[list[float | str]]]]:
+    prices: list[list[list[float]]] = []
     skin_info = []
     cache = {}
     progress = StatusBar(sum([len(l) for l in skin_links]), "Getting prices")
@@ -102,9 +129,9 @@ def get_prices(skin_links):
                 else:
                     res = 10
 
-                page = bs(load_page, "html.parser")
+                page = BeautifulSoup(load_page, "html.parser")
                 wear = [p.get_text() for p in page.findAll("span", class_="pull-right")][:res]  # Gets the first (res) wear prices
-                wear_info = [float(p.get_text()) for p in page.findAll("div", class_="marker-value cursor-default")]  # Finds max and min wear
+                wear_info: list[float | str] = [float(p.get_text()) for p in page.findAll("div", class_="marker-value cursor-default")]  # Finds max and min wear
                 if not wear_info:
                     wear_info = [-1, -1]  # If skin is vanilla
 
@@ -121,9 +148,9 @@ def get_prices(skin_links):
 
                 quals = [i.get_text() for i in page.findAll("p", class_="nomargin")][0]
                 quality = ""
-                for r in range(len(RARITY)):
-                    if quals.find(FULLRARITY[r]) != -1:  # Finds quality of skin
-                        quality = RARITY[r]
+                for r in range(len(Constants.RARITY)):
+                    if quals.find(Constants.FULL_RARITY[r]) != -1:  # Finds quality of skin
+                        quality = Constants.RARITY[r]
                         break
                 if quality == "" and quals.find("Contraband"):  # Makes the Howl a Covert skin to simplify calculations
                     quality = "C"
@@ -140,13 +167,3 @@ def get_prices(skin_links):
     t.results()
 
     return prices, skin_info
-
-
-def read_page(url, status_bar=None):
-    for i in range(5):
-        try:
-            return urlopen(Request(url, headers={"User-Agent": "Mozilla/5.0"}), timeout=5).read().decode("utf-8")
-        except:
-            if status_bar is not None:
-                status_bar.warn(f"!Retrying page! ({i})")
-    exit("Could not download webpage")

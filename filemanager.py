@@ -54,8 +54,8 @@ def readinfo(filename=""):
 
 
 def saveinfo(sampledata=False, overwrite=True):
-    cases = case_links()
-    skins, caseprices = skin_links(cases)
+    cases = get_case_urls()
+    skins, caseprices = get_skin_links(cases)
     prices, skinfo = get_prices(skins)
 
     if sampledata:  # If writing new sample data
