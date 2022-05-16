@@ -1,12 +1,16 @@
 # CSGOCaseValues
 
-***PLEASE* DO NOT BUY CASES TO MAKE MONEY. IF YOU LOOK AT THE DATA PRESENTED AND STILL BELIEVE THAT YOU HAVE A CHANCE THEN IT'S YOUR OWN FAULT IF YOU LOSE ALL OF YOUR MONEY. THIS PROJECT IS PURELY FOR MY OWN INTEREST.**
+This project is not an endorsement of gambling.
+In fact, the creator's desired outcome is to further discourage people from gambling.
 
-**GAMBLING IS ADDICTIVE. IF YOU BELIEVE YOU HAVE A GAMBLING ISSUE, PLEASE SEEK HELP. IF YOU DON'T BELIEVE YOU HAVE A GAMBLING ADDICTION, A LITTLE INTROSPECTION NEVER HURT ANYONE.**
+This project was created as I was learning Python.
+While I have by no means since become an expert, I do believe that I am significantly more skilled now than when I started this project.
+If you wish to get a more accurate representation of my current coding style, please take a look at the branch that I am using to refactor the project.
 
 ## About
 
-Estimating expected value of each case in CSGO, using data scraped from CSGOStash. In the future, I hope to use a different source, either reading directly from Steam or through some API.
+Estimating expected value of each case in CSGO, using data scraped from CSGOStash.
+In the future, I hope to use a different source, either reading directly from Steam or through some API.
 
 ## Example
 
