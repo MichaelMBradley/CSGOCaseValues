@@ -1,4 +1,4 @@
-from base_skin import Skin
+from drops.base_skin import Skin
 
 
 class StatTrak(Skin):

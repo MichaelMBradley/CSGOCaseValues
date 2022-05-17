@@ -1,12 +1,12 @@
 from drops.case import to_class
-from filemanager import readinfo
+from filemanager import read_info
 from constants import Constants
 
 
 def analysis(fname="", timing=None):
     if timing is not None:
         timing.swap_to(0)
-    cases, skins, skinfo, prices, caseCost = readinfo(fname)
+    cases, skins, skinfo, prices, caseCost = read_info(fname)
     if timing is not None:
         timing.swap_to(1)
     if cases:

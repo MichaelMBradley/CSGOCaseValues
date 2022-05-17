@@ -1,4 +1,3 @@
-import glob
 import json
 import os
 from datetime import date
@@ -10,27 +9,27 @@ from webreader import *
 OPDN = os.path.dirname(__file__)
 
 
-def jsonload(file):
+def json_load(file):
     with open(file, "r") as f:
         return json.load(f)
 
 
-def jsondump(file, data):
+def json_dump(file, data):
     with open(file, "w") as f:
         json.dump(data, f, indent=6)
 
 
-def orjsonload(file):
+def orjson_load(file):
     with open(file, "rb") as f:
         return json.loads(f.read())
 
 
-def orjsondump(file, data):
+def orjson_dump(file, data):
     with open(file, "wb") as f:
         f.write(orjson.dumps(data))
 
 
-def readinfo(filename=""):
+def read_info(filename=""):
     if filename == "":  # Default to reading sample data
         FILEDEST = OPDN + "\\sampledata\\"
     else:
@@ -44,16 +43,16 @@ def readinfo(filename=""):
             print("No such file.")
             return [], [], [], [], []
 
-    cases = orjsonload(FILEDEST + "cases.json")
-    skins = orjsonload(FILEDEST + "skins.json")
-    skinfo = orjsonload(FILEDEST + "skinfo.json")
-    prices = orjsonload(FILEDEST + "prices.json")
-    caseprices = orjsonload(FILEDEST + "caseprices.json")
+    cases = orjson_load(FILEDEST + "cases.json")
+    skins = orjson_load(FILEDEST + "skins.json")
+    skinfo = orjson_load(FILEDEST + "skinfo.json")
+    prices = orjson_load(FILEDEST + "prices.json")
+    caseprices = orjson_load(FILEDEST + "caseprices.json")
 
     return cases, skins, skinfo, prices, caseprices
 
 
-def saveinfo(sampledata=False, overwrite=True):
+def save_info(sampledata=False, overwrite=True):
     cases = get_case_urls()
     skins, caseprices = get_skin_links(cases)
     prices, skinfo = get_prices(skins)
@@ -72,10 +71,10 @@ def saveinfo(sampledata=False, overwrite=True):
                 print("File already exists.")
                 return [], [], [], [], []
 
-    orjsondump(FILEDEST + "cases.json", cases)
-    orjsondump(FILEDEST + "skins.json", skins)
-    orjsondump(FILEDEST + "skinfo.json", skinfo)
-    orjsondump(FILEDEST + "prices.json", prices)
-    orjsondump(FILEDEST + "caseprices.json", caseprices)
+    orjson_dump(FILEDEST + "cases.json", cases)
+    orjson_dump(FILEDEST + "skins.json", skins)
+    orjson_dump(FILEDEST + "skinfo.json", skinfo)
+    orjson_dump(FILEDEST + "prices.json", prices)
+    orjson_dump(FILEDEST + "caseprices.json", caseprices)
 
     return cases, skins, skinfo, prices, caseprices
